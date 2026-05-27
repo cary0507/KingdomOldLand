@@ -1,8 +1,8 @@
 public class Item extends Entity {
     private boolean hasPicked;  // Whether the item is being picked up or on the ground
 
-    public Item(int x, int y, double maxVelocity, int hitboxWidth, int hitboxHeight) {
-        super(x, y, maxVelocity, hitboxWidth, hitboxHeight);
+    public Item(int x, int y, int hitboxWidth, int hitboxHeight, double maxSpeed, double acceleration) {
+        super(x, y, hitboxWidth, hitboxHeight, maxSpeed, acceleration);
         this.hasPicked = false;
     }
 
