@@ -5,7 +5,7 @@
 
 import javax.swing.*;
 import java.awt.*;
-
+import java.io.File;
 
 public class GamePanel extends JPanel implements  Runnable{
     // Screen layout settings
@@ -15,6 +15,7 @@ public class GamePanel extends JPanel implements  Runnable{
 
     KeyHandler keyboard = new KeyHandler();
     Thread gameThread;
+    File file = new File("src/main/resources/save.txt");
 
     Player player;
 

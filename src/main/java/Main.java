@@ -21,7 +21,7 @@ public class Main {
         mainScreen.setVisible(true);
         mainScreen.setLocationRelativeTo(null);  // Center the window on the screen
         // Icon setup
-        ImageIcon icon = new ImageIcon("src/main/resources/crown icon.jpg");
+        ImageIcon icon = new ImageIcon("src/main/resources/images/crown icon.jpg");
         mainScreen.setIconImage(icon.getImage());
     }
 }
