@@ -2,7 +2,7 @@ public class Entity {
     // Scalar magnitudes
     public double acceleration;
     public double speed = 0;
-    private double maxSpeed;
+    private double maxSpeed;  // This should be a read only variable
     public double facingDir;
     // Vector components
     private double accX;
@@ -20,6 +20,12 @@ public class Entity {
 
     /**
      * Initializes the entity with its position, hitbox dimensions, and movement parameters.
+     * @param x the initial x-coordinate of the entity
+     * @param y the initial y-coordinate of the entity
+     * @param hitboxWidth the width of the entity's hitbox
+     * @param hitboxHeight the height of the entity's hitbox
+     * @param maxSpeed the maximum speed the entity can reach
+     * @param acceleration the acceleration magnitude of the entity
      * */
     public Entity(int x, int y, int hitboxWidth, int hitboxHeight, double maxSpeed, double acceleration) {
         this.x = x;
@@ -73,7 +79,7 @@ public class Entity {
     /**
      * Update the position of the entity based on its velocity vector components.
      * */
-    public void projectileMotion() {
+    public void getDisplacement() {
         this.x += (int) this.velX;
         this.y += (int) this.velY;
     }
