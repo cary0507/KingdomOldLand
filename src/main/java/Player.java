@@ -1,9 +1,7 @@
-import java.io.Serializable;
-
-public class Player extends Entity implements Serializable {
-    // Anchors the crown the player's head
-    private final int HEAD_OFFSET_X = 5;
-    private final int HEAD_OFFSET_Y = -5;
+public class Player extends Entity {
+    // Offsets to nchors the crown the player's head
+    public final int HEAD_OFFSET_X = 5;
+    public final int HEAD_OFFSET_Y = -5;
     private Mountable mount;
     private Item crown;
 
@@ -17,11 +15,13 @@ public class Player extends Entity implements Serializable {
         super(0, 0, playerWidth, playerHeight, 0, 0);
         this.mount = mount;
         // Anchor the player to the center of the mount, and the crown to the player's head
-        this.x = (int) mount.x + mount.getHitboxWidth() / 2 - playerWidth / 2;
-        this.y = (int) mount.x + mount.getHitboxHeight() / 2 + playerHeight / 2;
+        this.x = (int) mount.x + mount.hitboxWidth / 2 - playerWidth / 2;
+        this.y = (int) mount.x + mount.hitboxHeight / 2 + playerHeight / 2;
+        // Calculate crown's position based on the player's position and head offsets
         int crownX = x + HEAD_OFFSET_X;
         int crownY = y + HEAD_OFFSET_Y;
-        this.crown = new Item(crownX, crownY, 10, 10, 5, 0, 0);
+        this.crown = new Item(crownX, crownY, 10, 10, 5, 0,
+                GameData.ID.CROWN_ID);
         this.crown.hasPicked = true;  // Without this line the player will lose the crown immediately after game starts
     }
 
@@ -30,8 +30,8 @@ public class Player extends Entity implements Serializable {
      * */
     public void anchorsMount(Mountable targetMount) {
         // Update the player's position to follow the mount
-        x = (int) mount.x + targetMount.getHitboxWidth() / 2 - getHitboxWidth() / 2;
-        y = (int) mount.x + targetMount.getHitboxHeight() / 2 + getHitboxHeight() / 2;
+        x = (int) mount.x + targetMount.hitboxWidth / 2 - hitboxWidth / 2;
+        y = (int) mount.x + targetMount.hitboxHeight / 2 + hitboxHeight / 2;
         // Update the crown's position to follow the player's head
         int crownX = x + HEAD_OFFSET_X;
         int crownY = y + HEAD_OFFSET_Y;
@@ -48,7 +48,7 @@ public class Player extends Entity implements Serializable {
 
     public Item loseCrown() {
         this.crown.hasPicked = false;
-        Item lostCrown = this.crown.clone();  // Create a copy of the crown to drop on the ground
+        Item lostCrown = this.crown.duplicate();  // Create a copy of the crown to drop on the ground
         this.crown = null;
         return lostCrown;
     }

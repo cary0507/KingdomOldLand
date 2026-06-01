@@ -1,7 +1,6 @@
-import java.io.Serializable;
-
-public class Human extends Entity implements Serializable {
-    private int jobId;
+public class Human extends Entity {
+    public GameData.ID id;
+    public Structure habitat;
 
     /**
      * Initializes the entity with its position, hitbox dimensions, and movement parameters.
@@ -15,9 +14,11 @@ public class Human extends Entity implements Serializable {
      * @param acceleration the acceleration magnitude of the entity
      *
      */
-    public Human(int x, int y, int hitboxWidth, int hitboxHeight, double maxSpeed, double acceleration) {
+    public Human(int x, int y, int hitboxWidth, int hitboxHeight, double maxSpeed, double acceleration,
+                 Structure habitat) {
         super(x, y, hitboxWidth, hitboxHeight, maxSpeed, acceleration);
-        this.jobId = GamePanel.UNEMPLOYED_ID;
+        this.id = GameData.ID.FUGITIVE_ID;
+        this.habitat = habitat;
     }
 
 

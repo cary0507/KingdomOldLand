@@ -4,7 +4,7 @@ public class Entity implements Serializable {
     // Scalar magnitudes
     public double acceleration;
     public double speed = 0;
-    private double maxSpeed;  // This should be a read only variable
+    public final double maxSpeed;  // This should be a read only variable
     public double facingDir;
     // Vector components
     private double accX;
@@ -14,8 +14,8 @@ public class Entity implements Serializable {
     // The pixels on the screen has to be a whole number, hence the int type.
     public int x;
     public int y;
-    private int hitboxWidth;
-    private int hitboxHeight;
+    public final int hitboxWidth;
+    public final int hitboxHeight;
     // Stores image file paths
     private String[] animePaths;  // How it looks when it is moving
     private String iconPath;  // How it looks when at stationary
@@ -36,27 +36,6 @@ public class Entity implements Serializable {
         this.hitboxHeight = hitboxHeight;
         this.maxSpeed = maxSpeed;
         this.acceleration = acceleration;
-    }
-
-    /**
-     * Reads the hitbox width
-     * */
-    public int getHitboxWidth() {
-        return this.hitboxWidth;
-    }
-
-    /**
-     * Reads the hitbox height
-     * */
-    public int getHitboxHeight() {
-        return this.hitboxHeight;
-    }
-
-    /**
-     * Reads the maximum speed of the entity
-     * */
-    public double getMaxSpeed() {
-        return this.maxSpeed;
     }
 
     /**

@@ -6,7 +6,7 @@ public class MoneyBag implements Serializable {
     private ArrayList<Item> items;
 
     public void addCoin(Item coin) {
-        if (coin.getId() == GamePanel.COIN_ID) {
+        if (coin.id == GameData.ID.COIN_ID) {
             coins.add(coin);
         }
     }
