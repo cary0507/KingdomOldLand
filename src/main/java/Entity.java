@@ -8,8 +8,7 @@ public class Entity implements Serializable {
     public final int hitboxWidth;
     public final int hitboxHeight;
     // Stores image file paths
-    private String[] animePaths;  // How it looks when it is moving
-    private String iconPath;  // How it looks when at stationary
+    public String imagePath;  // How it looks when at stationary
 
     /**
      * Initializes the entity with its position, hitbox dimensions, and movement parameters.
@@ -19,11 +18,12 @@ public class Entity implements Serializable {
      * @param hitboxHeight the height of the entity's hitbox
      * @param maxSpeed the maximum speed the entity can reach
      * */
-    public Entity(int x, int y, int hitboxWidth, int hitboxHeight, double maxSpeed) {
+    public Entity(int x, int y, int hitboxWidth, int hitboxHeight, double maxSpeed, String imagePath) {
         this.x = x;
         this.y = y;
         this.hitboxWidth = hitboxWidth;
         this.hitboxHeight = hitboxHeight;
         this.maxSpeed = maxSpeed;
+        this.imagePath = imagePath;
     }
 }

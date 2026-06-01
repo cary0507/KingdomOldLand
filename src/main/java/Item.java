@@ -13,17 +13,7 @@
  * </pre>
  */
 public class Item extends Projectile {
-
-    /**
-     * True when the item has been picked up (is being carried) and false when
-     * the item is on the ground and free to be picked.
-     */
     public boolean hasPicked;  // Whether the item is being picked up or on the ground
-
-    /**
-     * The identity/type of this item. The {@code GameData.ID} enum (or class)
-     * should define the possible item kinds (for example COIN, KEY, CROWN, ...).
-     */
     public final GameData.ID id;
 
     /**
