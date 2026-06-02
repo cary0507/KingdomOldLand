@@ -16,6 +16,9 @@ public class GameData implements Serializable {
         HUNTER_ID,
         BUILDER_ID,
         BANKER_ID,
+        // Enemy's ID
+        GREED_ID,
+        BREEDER_ID,
         // Structure's ID
         HEADQUARTER_ID,
         TREE_ID,
@@ -30,5 +33,9 @@ public class GameData implements Serializable {
         HAMMER_SHELF_ID
     }
     // Objects
+    MoneyBag moneyBag;
     Player player;
+    Item[] allItems;
+    Human[] allHumans;
+    Structure[] allStructures;
 }

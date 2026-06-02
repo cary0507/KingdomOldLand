@@ -13,6 +13,9 @@ public class GamePanel extends JPanel implements Runnable {
     final int PANEL_WIDTH = 1200;
     final int PANEL_HEIGHT = 800;
     final int HORIZON = PANEL_HEIGHT - 200;
+    final int FPS = 60;
+    final int NANO_SEC = 1_000_000_000;
+    final int MILLI_SEC = 1_000;
     KeyHandler keyboard = new KeyHandler();
     Thread gameThread;
 
@@ -32,13 +35,22 @@ public class GamePanel extends JPanel implements Runnable {
 
     @Override
     public void run() {
+        double drawInterval = (double) NANO_SEC / FPS;  // Time per frame in nanoseconds
+        double deltaTime = 0;
+        long lastTime = System.nanoTime();
+
         while (gameThread != null) {
+            // Calculate the time elapsed since the last frame
             long currentTime = System.nanoTime();
-            System.out.println("Current time: " + currentTime);
-            // Update game properties
-            update();
-            // Draws the updated game
-            repaint();
+            deltaTime += (currentTime - lastTime) / drawInterval;  // Accumulate the time in terms of frames
+            lastTime = currentTime;
+            if (deltaTime >= 1) {
+                // Update game properties
+                update();
+                // Draws the updated game
+                repaint();
+                deltaTime -= 1;  // Reset the delta time for the next frame
+            }
         }
     }
 

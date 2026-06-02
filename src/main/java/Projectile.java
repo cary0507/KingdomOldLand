@@ -4,6 +4,7 @@ public class Projectile extends Entity {
     private double accY;
     private double velX;
     private double velY;
+    public int damage;
 
     /**
      * Initializes the projectile with its position, hitbox dimensions, movement parameters, and vector components.
@@ -25,6 +26,7 @@ public class Projectile extends Entity {
         this.accY = accY;
         this.velX = velX;
         this.velY = velY;
+        this.damage = 0;
     }
 
     /**
