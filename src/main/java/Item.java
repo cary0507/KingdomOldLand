@@ -24,11 +24,11 @@ public class Item extends Projectile {
      * @param hitboxWidth width of the item's collision hitbox
      * @param hitboxHeight height of the item's collision hitbox
      * @param maxSpeed maximum movement speed for the item
-     * @param acceleration acceleration used when the item moves
      * @param id identifier representing the item's type
      */
-    public Item(int x, int y, int hitboxWidth, int hitboxHeight, double maxSpeed, double acceleration, GameData.ID id) {
-        super(x, y, hitboxWidth, hitboxHeight, maxSpeed, acceleration);
+    public Item(int x, int y, int hitboxWidth, int hitboxHeight, double maxSpeed, GameData.ID id,
+                String imagePath) {
+        super(x, y, hitboxWidth, hitboxHeight, maxSpeed, 0, 9.81, 0, 0, imagePath);
         this.hasPicked = false;
         this.id = id;
     }
@@ -45,7 +45,7 @@ public class Item extends Projectile {
     public Item duplicate() {
         Item cloned = new Item(
                 this.x, this.y, this.hitboxWidth, this.hitboxHeight, this.maxSpeed,
-                this.acceleration, this.id
+                this.id, this.imagePath
         );
         cloned.hasPicked = this.hasPicked;
         return cloned;

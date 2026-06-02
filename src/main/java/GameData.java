@@ -17,6 +17,7 @@ public class GameData implements Serializable {
         // Structure's ID
         HEADQUARTER_ID,
         TREE_ID,
+        GRASS_ID,
         TEMPLE_ID,
         WALL_ID,
         ARCHERY_TOWER_ID,

@@ -1,15 +1,25 @@
-public class Wall {
-    // Composition of Structure
-    public Structure[] levelWalls = new Structure[5];
+public class Wall extends Structure {
+    public int level;
+    public final String[] LEVEL_IMG_PATH;
+    public int princeLvlUp;
 
-    public Wall(int x, int y) {
-        // Initialize the walls for each level
-        this.levelWalls = new Structure[] {
-            new Structure(x, y, 0, 0, 0, GameData.ID.WALL_ID),      // Level 0 wall (non-existent)
-            new Structure(x, y, 25, 10, 10, GameData.ID.WALL_ID),   // Level 1 wall
-            new Structure(x, y, 50, 10, 15, GameData.ID.WALL_ID),   // Level 2 wall
-            new Structure(x, y, 60, 10, 20, GameData.ID.WALL_ID),   // Level 3 wall
-            new Structure(x, y, 60, 10, 30, GameData.ID.WALL_ID)    // Level 4 wall
-        };
+    public Wall(int x, int y, String[] levelImgPath) {
+        super(x, y, 0, 0, 0, GameData.ID.WALL_ID, levelImgPath[0]);
+        this.LEVEL_IMG_PATH = levelImgPath;
+        this.level = 0;
+        this.princeLvlUp = 1;
+    }
+
+    public void levelUp() {
+        if (this.level >= LEVEL_IMG_PATH.length) {
+            return;
+        }
+        this.level++;
+        this.princeLvlUp *= 3;
+        this.maxHP = 5 + 5 * this.level;
+        this.curHP = this.maxHP;
+        this.width = 10;
+        this.height = 5 + 10 * (this.level  - 1);
+        this.imagePath = this.LEVEL_IMG_PATH[this.level];
     }
 }
