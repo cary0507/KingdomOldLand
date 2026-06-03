@@ -18,6 +18,7 @@ public class GamePanel extends JPanel implements Runnable {
     final int MILLI_SEC = 1_000;
     KeyHandler keyboard = new KeyHandler();
     Thread gameThread;
+    public static GameData savedData;
 
     public GamePanel() {
         // Set the preferred size of the panel
@@ -26,6 +27,8 @@ public class GamePanel extends JPanel implements Runnable {
         this.setDoubleBuffered(true);  // Smoother rendering
         this.addKeyListener(keyboard);  // Add key detection
         this.setFocusable(true);  // Focus on this game panel
+        // Setup saved game data
+        savedData = new GameData();
     }
 
     public void startGameThread() {

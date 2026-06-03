@@ -1,9 +1,9 @@
 public class Projectile extends Entity {
     // Vector components
-    private double accX;
-    private double accY;
-    private double velX;
-    private double velY;
+    public double accX;
+    public double accY;
+    public double velX;
+    public double velY;
     public int damage;
 
     /**

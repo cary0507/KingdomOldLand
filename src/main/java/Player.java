@@ -2,6 +2,7 @@ public class Player extends Entity {
     // Offsets to nchors the crown the player's head
     public final int HEAD_OFFSET_X = 15;
     public final int HEAD_OFFSET_Y = -15;
+    private MoneyBag moneyBag;
     private Mountable mount;
     private Item crown;
     KeyHandler keyInput;
@@ -18,14 +19,31 @@ public class Player extends Entity {
         this.gamePanel = gamePanel;
     }
 
-    public void setDefaultValues() {
-
+    public void setMount(Mountable mount) {
+        this.mount = mount;
+        mount.isMounted = true;
+        anchorsMount(mount);  // Anchor the player to the mount's position
     }
 
-    public void setMount(Mountable mount) {}
-
     public void update() {
-        
+        if (mount == null) {
+            // If the player is not mounted, they can move freely (not implemented here)
+            return;
+        }
+        // Update player's actions based on key inputs while mounted
+        if (keyInput.downPressed) {
+            Item tossedCoin = moneyBag.tossCoin();
+            tossedCoin.x = x;
+            tossedCoin.y = y;
+            tossedCoin.velX = 0;
+            tossedCoin.velY = -5;  // Toss the coin upwards
+            tossedCoin.accX = 0;
+            tossedCoin.accY = GameData.GRAVITY;  // Apply gravity to the tossed
+            GamePanel.savedData.allItems.add(tossedCoin);
+        }
+        if (keyInput.leftPressed) {
+            mount.x += (int) mount.maxSpeed;
+        }
     }
 
     /**

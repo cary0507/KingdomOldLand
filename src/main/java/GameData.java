@@ -1,4 +1,5 @@
 import java.io.Serializable;
+import java.util.ArrayList;
 
 public class GameData implements Serializable {
     public static final double GRAVITY = 9.8;
@@ -16,9 +17,6 @@ public class GameData implements Serializable {
         HUNTER_ID,
         BUILDER_ID,
         BANKER_ID,
-        // Enemy's ID
-        GREED_ID,
-        BREEDER_ID,
         // Structure's ID
         HEADQUARTER_ID,
         TREE_ID,
@@ -33,9 +31,10 @@ public class GameData implements Serializable {
         HAMMER_SHELF_ID
     }
     // Objects
-    MoneyBag moneyBag;
-    Player player;
-    Item[] allItems;
-    Human[] allHumans;
-    Structure[] allStructures;
+    public Player player;
+    public ArrayList<Item> allItems;
+    public ArrayList<Human> allHumans;
+    public ArrayList<Structure> allStructures;
+    public ArrayList<Enemy> allEnemies;
+    public ArrayList<Projectile> allProjectiles;
 }
