@@ -34,7 +34,7 @@ public class Structure implements Serializable {
     public Item rewardCoin() {
         int centerX = (int) (x + width / 2);
         Item coin = new Item(centerX, y, 20, 20, 6, GameData.ID.COIN_ID,
-                GameData.COIN_IMG_PATH);
+                ImagePath.COIN);
         return coin;
     }
 }

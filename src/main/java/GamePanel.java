@@ -5,8 +5,6 @@
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.File;
-import java.io.FileNotFoundException;
 
 public class GamePanel extends JPanel implements Runnable {
     // Environment settings
@@ -18,7 +16,7 @@ public class GamePanel extends JPanel implements Runnable {
     final int MILLI_SEC = 1_000;
     KeyHandler keyboard = new KeyHandler();
     Thread gameThread;
-    public static GameData savedData;
+    public static GameData gameData;
 
     public GamePanel() {
         // Set the preferred size of the panel
@@ -28,7 +26,7 @@ public class GamePanel extends JPanel implements Runnable {
         this.addKeyListener(keyboard);  // Add key detection
         this.setFocusable(true);  // Focus on this game panel
         // Setup saved game data
-        savedData = new GameData();
+        gameData = new GameData();
     }
 
     public void startGameThread() {
@@ -67,6 +65,7 @@ public class GamePanel extends JPanel implements Runnable {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
         g2.setColor(Color.white);
+        g2.fillRect(0, 0, 40, 60);
         g2.fillRect(0, HORIZON, PANEL_WIDTH, PANEL_HEIGHT - HORIZON);
         // Dispose of the graphics context to free up resources
         g2.dispose();

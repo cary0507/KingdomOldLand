@@ -3,8 +3,6 @@ import java.util.ArrayList;
 
 public class GameData implements Serializable {
     public static final double GRAVITY = 9.8;
-    public static final String COIN_IMG_PATH = "Fix later";
-    // List all IDs
     public enum ID {
         // Item's ID
         CROWN_ID,
@@ -37,4 +35,12 @@ public class GameData implements Serializable {
     public ArrayList<Structure> allStructures;
     public ArrayList<Enemy> allEnemies;
     public ArrayList<Projectile> allProjectiles;
+    public ArrayList<Mountable> allMounts;
+
+    public GameData(KeyHandler keyHandler, GamePanel gamePanel) {
+        Mountable originHorse = new Mountable(
+                600, 280, 100, 100, 5.0, 100, ImagePath.MOUNT
+        );
+        player = new Player(keyHandler, gamePanel, originHorse, ImagePath.PLAYER);
+    }
 }

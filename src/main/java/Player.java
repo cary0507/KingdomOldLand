@@ -13,16 +13,14 @@ public class Player extends Entity {
      * @param keyHandler the key handler to control the player
      * @param gamePanel the game panel to render the player
      */
-    public Player(KeyHandler keyHandler, GamePanel gamePanel, String imagePath) {
+    public Player(KeyHandler keyHandler, GamePanel gamePanel, Mountable mount, String imagePath) {
         super(0, 0, 10, 10, 0, imagePath);
         this.keyInput = keyHandler;
         this.gamePanel = gamePanel;
-    }
-
-    public void setMount(Mountable mount) {
         this.mount = mount;
         mount.isMounted = true;
         anchorsMount(mount);  // Anchor the player to the mount's position
+        moneyBag = new MoneyBag(15, ImagePath.MONEY_BAG);
     }
 
     public void update() {
@@ -39,7 +37,7 @@ public class Player extends Entity {
             tossedCoin.velY = -5;  // Toss the coin upwards
             tossedCoin.accX = 0;
             tossedCoin.accY = GameData.GRAVITY;  // Apply gravity to the tossed
-            GamePanel.savedData.allItems.add(tossedCoin);
+            GamePanel.gameData.allItems.add(tossedCoin);
         }
         if (keyInput.leftPressed) {
             mount.x += (int) mount.maxSpeed;
