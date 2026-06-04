@@ -2,9 +2,8 @@ public class ContainerStruct extends Structure {
     public Entity[] containing;
     public int[][] relativePos;
 
-    public ContainerStruct(int x, int y, int width, int height, int maxHP, GameData.ID id, String imgPath,
-                           int[][] relativePos) {
-        super(x, y, width, height, maxHP, id, imgPath);
+    public ContainerStruct(int x, int y, int width, int height, int maxHP, GameData.ID id, int[][] relativePos) {
+        super(x, y, width, height, maxHP, id);
         this.relativePos = relativePos;
         this.containing = new Entity[relativePos.length];
     }

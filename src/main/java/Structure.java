@@ -1,3 +1,7 @@
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -9,7 +13,7 @@ public class Structure implements Serializable {
     public int maxHP;
     public int curHP;
     public GameData.ID id;
-    public String imagePath;
+    public BufferedImage image;
 
     /**
      * Initializes the structure with its position, dimensions, hit points, and image path.
@@ -20,7 +24,7 @@ public class Structure implements Serializable {
      * @param height the height of the structure
      * @param maxHP the maximum hit points of the structure
      */
-    public Structure(int x, int y, int width, int height, int maxHP, GameData.ID id, String imagePath) {
+    public Structure(int x, int y, int width, int height, int maxHP, GameData.ID id) {
         this.x = x;
         this.y = y;
         this.width = width;
@@ -28,13 +32,19 @@ public class Structure implements Serializable {
         this.maxHP = maxHP;
         this.curHP = maxHP;
         this.id = id;
-        this.imagePath = imagePath;
+    }
+
+    public void setImage(String imagePath) {
+        try {
+            this.image = ImageIO.read(getClass().getResourceAsStream(imagePath));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public Item rewardCoin() {
         int centerX = (int) (x + width / 2);
-        Item coin = new Item(centerX, y, 20, 20, 6, GameData.ID.COIN_ID,
-                ImagePath.COIN);
+        Item coin = new Item(centerX, y, 20, 20, 6, GameData.ID.COIN_ID);
         return coin;
     }
 }

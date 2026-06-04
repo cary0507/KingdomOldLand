@@ -9,18 +9,19 @@ public class Projectile extends Entity {
     /**
      * Initializes the projectile with its position, hitbox dimensions, movement parameters, and vector components.
      *
-     * @param x the initial x-coordinate of the projectile
-     * @param y the initial y-coordinate of the projectile
-     * @param hitboxWidth the width of the projectile's hitbox
+     * @param x            the initial x-coordinate of the projectile
+     * @param y            the initial y-coordinate of the projectile
+     * @param hitboxWidth  the width of the projectile's hitbox
      * @param hitboxHeight the height of the projectile's hitbox
-     * @param maxSpeed the maximum speed the projectile can reach
-     * @param accX the initial horizontal acceleration component of the projectile
-     * @param accY the initial vertical acceleration component of the projectile
-     * @param velX the initial horizontal velocity component of the projectile
-     * @param velY the initial vertical velocity component of the projectile
-     * */
+     * @param maxSpeed     the maximum speed the projectile can reach
+     * @param accX         the initial horizontal acceleration component of the projectile
+     * @param accY         the initial vertical acceleration component of the projectile
+     * @param velX         the initial horizontal velocity component of the projectile
+     * @param velY         the initial vertical velocity component of the projectile
+     *
+     */
     public Projectile(int x, int y, int hitboxWidth, int hitboxHeight, double maxSpeed, double accX, double accY,
-                      double velX, double velY, String imagePath) {
+                      double velX, double velY) {
         super(x, y, hitboxWidth, hitboxHeight, maxSpeed, imagePath);
         this.accX = accX;
         this.accY = accY;

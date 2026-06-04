@@ -1,4 +1,6 @@
+import java.awt.image.BufferedImage;
 import java.io.Serializable;
+import java.util.ArrayList;
 
 public class Entity implements Serializable {
     public final double maxSpeed;
@@ -7,8 +9,9 @@ public class Entity implements Serializable {
     public int y;
     public final int hitboxWidth;
     public final int hitboxHeight;
-    // Stores image file paths
-    public String imagePath;  // How it looks when at stationary
+    // Stores image files
+    public ArrayList<BufferedImage> leftImages;
+    public ArrayList<BufferedImage> rightImages;
 
     /**
      * Initializes the entity with its position, hitbox dimensions, and movement parameters.
@@ -18,16 +21,15 @@ public class Entity implements Serializable {
      * @param hitboxHeight the height of the entity's hitbox
      * @param maxSpeed the maximum speed the entity can reach
      * */
-    public Entity(int x, int y, int hitboxWidth, int hitboxHeight, double maxSpeed, String imagePath) {
+    public Entity(int x, int y, int hitboxWidth, int hitboxHeight, double maxSpeed) {
         this.x = x;
         this.y = y;
         this.hitboxWidth = hitboxWidth;
         this.hitboxHeight = hitboxHeight;
         this.maxSpeed = maxSpeed;
-        this.imagePath = imagePath;
     }
 
     public Entity duplicate() {
-        return new Entity(this.x, this.y, this.hitboxWidth, this.hitboxHeight, this.maxSpeed, this.imagePath);
+        return new Entity(this.x, this.y, this.hitboxWidth, this.hitboxHeight, this.maxSpeed);
     }
 }

@@ -20,13 +20,13 @@ public class GamePanel extends JPanel implements Runnable {
 
     public GamePanel() {
         // Set the preferred size of the panel
-        this.setPreferredSize(new java.awt.Dimension(PANEL_WIDTH, PANEL_HEIGHT));
+        this.setPreferredSize(new Dimension(PANEL_WIDTH, PANEL_HEIGHT));
         this.setBackground(Color.BLACK);
         this.setDoubleBuffered(true);  // Smoother rendering
         this.addKeyListener(keyboard);  // Add key detection
         this.setFocusable(true);  // Focus on this game panel
         // Setup saved game data
-        gameData = new GameData();
+        gameData = new GameData(keyboard, this);
     }
 
     public void startGameThread() {

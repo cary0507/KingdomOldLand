@@ -2,7 +2,7 @@ public class Player extends Entity {
     // Offsets to nchors the crown the player's head
     public final int HEAD_OFFSET_X = 15;
     public final int HEAD_OFFSET_Y = -15;
-    private MoneyBag moneyBag;
+    private final MoneyBag moneyBag;
     private Mountable mount;
     private Item crown;
     KeyHandler keyInput;
@@ -13,11 +13,12 @@ public class Player extends Entity {
      * @param keyHandler the key handler to control the player
      * @param gamePanel the game panel to render the player
      */
-    public Player(KeyHandler keyHandler, GamePanel gamePanel, Mountable mount, String imagePath) {
-        super(0, 0, 10, 10, 0, imagePath);
+    public Player(KeyHandler keyHandler, GamePanel gamePanel, Mountable mount) {
+        super(0, 0, 10, 10, 0);
         this.keyInput = keyHandler;
         this.gamePanel = gamePanel;
         this.mount = mount;
+        crown = new Item(0, 0, 10, 10, 5, GameData.ID.CROWN_ID);
         mount.isMounted = true;
         anchorsMount(mount);  // Anchor the player to the mount's position
         moneyBag = new MoneyBag(15, ImagePath.MONEY_BAG);
@@ -25,7 +26,6 @@ public class Player extends Entity {
 
     public void update() {
         if (mount == null) {
-            // If the player is not mounted, they can move freely (not implemented here)
             return;
         }
         // Update player's actions based on key inputs while mounted
@@ -41,6 +41,12 @@ public class Player extends Entity {
         }
         if (keyInput.leftPressed) {
             mount.x += (int) mount.maxSpeed;
+            anchorsMount(mount);  // Update the player's position to follow the mount
+            return;  // Prevent movement in the opposite direction if both keys are pressed
+        }
+        if (keyInput.rightPressed) {
+            mount.x -= (int) mount.maxSpeed;
+            anchorsMount(mount);  // Update the player's position to follow the mount
         }
     }
 

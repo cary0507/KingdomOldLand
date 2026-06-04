@@ -39,8 +39,10 @@ public class GameData implements Serializable {
 
     public GameData(KeyHandler keyHandler, GamePanel gamePanel) {
         Mountable originHorse = new Mountable(
-                600, 280, 100, 100, 5.0, 100, ImagePath.MOUNT
+                600, 280, 100, 100, 5.0, 100
         );
-        player = new Player(keyHandler, gamePanel, originHorse, ImagePath.PLAYER);
+        player = new Player(keyHandler, gamePanel, originHorse);
     }
+
+
 }
