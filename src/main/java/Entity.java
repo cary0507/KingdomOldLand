@@ -3,7 +3,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.ArrayList;
 import javax.imageio.ImageIO;
 
 public class Entity implements Serializable {
@@ -14,53 +13,68 @@ public class Entity implements Serializable {
     public final int hitboxWidth;
     public final int hitboxHeight;
     // Stores image files
-    public int imgIndex;  // Determines which image to use for animation
     public boolean isFacingLeft;    // Since it's a 2D game and there's only left and right
                                     // This value only affects which image to use, not the actual movement direction
-    public ArrayList<BufferedImage> leftImages;
-    public ArrayList<BufferedImage> rightImages;
+    public int imgIndex;            // Determines which image to use for animation
+    public BufferedImage[] leftImages;
+    public BufferedImage[] rightImages;
+    // Environment
     public GamePanel gamePanel;
 
     /**
      * Initializes the entity with its position, hitbox dimensions, and movement parameters.
      * @param x the initial x-coordinate of the entity
      * @param y the initial y-coordinate of the entity
-     * @param hitboxWidth the width of the entity's hitbox
-     * @param hitboxHeight the height of the entity's hitbox
+     * @param imageWidth the width of the entity's image
+     * @param imageHeight the height of the entity's image
      * @param maxSpeed the maximum speed the entity can reach
      * */
-    public Entity(int x, int y, int hitboxWidth, int hitboxHeight, double maxSpeed, GamePanel gamePanel) {
+    public Entity(int x, int y, int imageWidth, int imageHeight, double maxSpeed, GamePanel gamePanel) {
         this.gamePanel = gamePanel;
         this.x = x;
         this.y = y;
-        this.hitboxWidth = hitboxWidth;
-        this.hitboxHeight = hitboxHeight;
+        this.hitboxWidth = imageWidth * gamePanel.SCALE_IMAGE;  // Scale up the image
+        this.hitboxHeight = imageHeight * gamePanel.SCALE_IMAGE;
         this.maxSpeed = maxSpeed;
         imgIndex = 0;
-        // initialize fields (avoid shadowing local variables)
-        this.leftImages = new ArrayList<>();
-        this.rightImages = new ArrayList<>();
-    }
-
-    public void setUpImages(ArrayList<BufferedImage> leftImages, ArrayList<BufferedImage> rightImages) {
-        this.leftImages = leftImages;
-        this.rightImages = rightImages;
     }
 
     /**
-     * Converts String paths to image ArrayList
+     * Converts String paths to image array
      *
-     * @param paths the list of image paths to load
-     * @return an ArrayList of BufferedImages loaded from the provided paths
+     * @param paths the array of image paths to load
+     * @return an array of BufferedImages loaded from the provided paths
      * */
-    public ArrayList<BufferedImage> pathsToImages(ArrayList<String> paths) {
-        ArrayList<BufferedImage> images = new ArrayList<>();
-        if (paths != null) {
-            for (String path : paths) {
-                if (path == null) continue;
+    public BufferedImage[] pathsToImages(String[] paths) {
+        if (paths == null) {
+            return new BufferedImage[0];
+        }
+
+        // Count valid paths
+        int imageCount = 0;
+        for (String path : paths) {
+            if (path != null) {
                 try {
                     BufferedImage img = ImageIO.read(getClass().getResourceAsStream(path));
-                    images.add(img);
+                    if (img != null) {
+                        imageCount++;
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        // Store valid images
+        BufferedImage[] images = new BufferedImage[imageCount];
+        int index = 0;
+        for (String path : paths) {
+            if (path != null) {
+                try {
+                    BufferedImage img = ImageIO.read(getClass().getResourceAsStream(path));
+                    if (img != null) {
+                        images[index++] = img;
+                    }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -70,27 +84,36 @@ public class Entity implements Serializable {
     }
 
     /**
-     * Load images from file paths and populate leftImages and rightImages lists.
+     * Load images from file paths and populate leftImages and rightImages arrays.
      * If any image fails to load it will be skipped.
      *
      * @param leftImagePaths  paths to left-facing images
      * @param rightImagePaths paths to right-facing images
      */
-    public void setUpImagesFromPaths(ArrayList<String> leftImagePaths, ArrayList<String> rightImagePaths) {
-        this.leftImages = new ArrayList<>();
-        this.rightImages = new ArrayList<>();
+    public void setImagesFromPaths(String[] leftImagePaths, String[] rightImagePaths) {
         leftImages = pathsToImages(leftImagePaths);
         rightImages = pathsToImages(rightImagePaths);
         // ensure imgIndex is valid
         if (imgIndex < 0) {
             imgIndex = 0;
         }
-        if (isFacingLeft && this.leftImages.isEmpty()) {
+        if (isFacingLeft && this.leftImages.length == 0) {
             imgIndex = 0;
         }
-        if (!isFacingLeft && this.rightImages.isEmpty()) {
+        if (!isFacingLeft && this.rightImages.length == 0) {
             imgIndex = 0;
         }
+    }
+
+    /**
+     * Set images from arrays of BufferedImage
+     *
+     * @param leftImages the images when facing left
+     * @param rightImages the images when facing right
+     * */
+    private void setImages(BufferedImage[] leftImages, BufferedImage[] rightImages) {
+        this.leftImages = leftImages;
+        this.rightImages = rightImages;
     }
 
     /**
@@ -98,7 +121,7 @@ public class Entity implements Serializable {
      * */
     public Entity duplicate() {
         Entity duplicate = new Entity(x, y, hitboxWidth, hitboxHeight, maxSpeed, gamePanel);
-        duplicate.setUpImages(leftImages, rightImages);
+        duplicate.setImages(leftImages, rightImages);
         return duplicate;
     }
 
@@ -117,10 +140,10 @@ public class Entity implements Serializable {
     public void render(Graphics2D g2) {
         BufferedImage img;
         if (isFacingLeft) {
-            img = leftImages.get(imgIndex);
+            img = leftImages[imgIndex];
         } else {
-            img = rightImages.get(imgIndex);
+            img = rightImages[imgIndex];
         }
-        g2.drawImage(img, x, y, null);
+        g2.drawImage(img, x, y, hitboxWidth, hitboxHeight, null);
     }
 }

@@ -2,7 +2,29 @@ import java.io.*;
 import java.util.ArrayList;
 
 public class GameData implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
     public static final double GRAVITY = 9.8;
+    // Image paths
+    public static String[] playerImgL = {
+            "/raw images/king left.png",
+    };
+    public static String[] playerImgR = {
+            "/raw images/king right.png",
+    };
+    public static String[] crownImgL = {
+            "/raw images/crown left.png"
+    };
+    public static String[] crownImgR = {
+            "/raw images/crown right.png"
+    };
+    public static String[] brownHorseImgL = {
+            "/raw images/brown horse left.png",
+    };
+    public static String[] brownHorseImgR = {
+            "/raw images/brown horse right.png",
+    };
+    // Object IDs
     public enum ID {
         // Item's ID
         CROWN_ID,
@@ -37,11 +59,31 @@ public class GameData implements Serializable {
     public ArrayList<Projectile> allProjectiles;
     public ArrayList<Mountable> allMounts;
 
+    /**
+     * Initialize all game object
+     *
+     * @param keyHandler the key input
+     * @param gamePanel the GamePanel object of main screen
+     * */
     public GameData(KeyHandler keyHandler, GamePanel gamePanel) {
+        allItems = new ArrayList<>();
+        allHumans = new ArrayList<>();
+        allStructures = new ArrayList<>();
+        allEnemies = new ArrayList<>();
+        allProjectiles = new ArrayList<>();
+        allMounts = new ArrayList<>();
+        // Setup default horse
         Mountable originHorse = new Mountable(
-                600, 280, 100, 100, 5.0, 100, gamePanel
+                (int) (GamePanel.PANEL_WIDTH / 2),
+                GamePanel.HORIZON, 43, 29, 5.0, 100, gamePanel
         );
+        originHorse.y -= originHorse.hitboxHeight;
+        originHorse.setImagesFromPaths(brownHorseImgL, brownHorseImgR);
+        allMounts.add(originHorse);
+        // Setup player
         player = new Player(keyHandler, gamePanel, originHorse);
+        player.setImagesFromPaths(playerImgL, playerImgR);
+        player.crown.setImagesFromPaths(crownImgL, crownImgR);
     }
 
     /**

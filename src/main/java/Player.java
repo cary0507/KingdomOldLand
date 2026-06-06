@@ -1,15 +1,15 @@
 import java.awt.*;
 
 public class Player extends Entity {
-    private final MoneyBag moneyBag;
-    private Mountable mount;
-    private Item crown;
+    public final MoneyBag moneyBag;
+    public Mountable mount;
+    public Item crown;
     // Offset when facing left
-    private int crownXOffsetL;
-    private int crownYOffsetL;
+    public int crownXOffsetL;
+    public int crownYOffsetL;
     // Offset when facing right
-    private int crownXOffsetR;
-    private int crownYOffsetR;
+    public int crownXOffsetR;
+    public int crownYOffsetR;
     KeyHandler keyInput;
 
     /**
@@ -18,11 +18,11 @@ public class Player extends Entity {
      * @param gamePanel the game panel to render the player
      */
     public Player(KeyHandler keyHandler, GamePanel gamePanel, Mountable mount) {
-        super(0, 0, 10, 10, 0, gamePanel);
+        super(0, 0, 17, 23, 0, gamePanel);
         this.keyInput = keyHandler;
         this.gamePanel = gamePanel;
         this.mount = mount;
-        crown = new Item(0, 0, 10, 10, 5, GameData.ID.CROWN_ID,
+        crown = new Item(0, 0, 6, 2, 5, GameData.ID.CROWN_ID,
                 gamePanel);
         mount.isMounted = true;
         mount.anchorsPassenger(this);  // Anchor the player to the mount's position
@@ -95,26 +95,18 @@ public class Player extends Entity {
         // Update player's actions based on key inputs while mounted
         if (keyInput.downPressed) {
             Item tossedCoin = moneyBag.tossCoin();
-            tossedCoin.x = x;
-            tossedCoin.y = y;
-            tossedCoin.velX = 0;
-            tossedCoin.velY = -5;                   // Toss the coin upwards
-            tossedCoin.accX = 0;
-            tossedCoin.accY = GameData.GRAVITY;     // Apply gravity to the tossed
             GamePanel.gameData.allItems.add(tossedCoin);
         }
         if (keyInput.leftPressed) {
             isFacingLeft = true;
             mount.isFacingLeft = true;
-            mount.x += (int) mount.maxSpeed;
+            mount.x -= (int) mount.maxSpeed;
             mount.anchorsPassenger(this);   // Update the player's position to follow the mount
             anchorsCrown();
-            return;                         // Prevent movement in the opposite direction if both keys are pressed
-        }
-        if (keyInput.rightPressed) {
+        } else if (keyInput.rightPressed) {
             isFacingLeft = false;
             mount.isFacingLeft = false;
-            mount.x -= (int) mount.maxSpeed;
+            mount.x += (int) mount.maxSpeed;
             mount.anchorsPassenger(this);
             anchorsCrown();
         }

@@ -1,4 +1,5 @@
 import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -26,14 +27,14 @@ public class Structure implements Serializable {
      * @param maxHP the maximum hit points of the structure
      */
     public Structure(int x, int y, int width, int height, int maxHP, GameData.ID id, GamePanel gamePanel) {
+        this.gamePanel = gamePanel;
         this.x = x;
         this.y = y;
-        this.width = width;
-        this.height = height;
+        this.width = width * gamePanel.SCALE_IMAGE;
+        this.height = height * gamePanel.SCALE_IMAGE;
         this.maxHP = maxHP;
         this.curHP = maxHP;
         this.id = id;
-        this.gamePanel = gamePanel;
     }
 
     /**
@@ -56,5 +57,9 @@ public class Structure implements Serializable {
         int centerX = (int) (x + width / 2);
         Item coin = new Item(centerX, y, 20, 20, 6, GameData.ID.COIN_ID, gamePanel);
         return coin;
+    }
+    
+    public void render(Graphics2D g2) {
+        g2.drawImage(image, x, y, width, height, null);
     }
 }

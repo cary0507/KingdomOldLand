@@ -1,6 +1,6 @@
 public class Item extends Projectile {
     public boolean hasPicked;  // Whether the item is being picked up or on the ground
-    public boolean isOutside;
+    public boolean isOutOfBound;  // Determines if the Item will fall into the river and disappear
     public final GameData.ID id;
 
     /**
@@ -17,7 +17,7 @@ public class Item extends Projectile {
                 GamePanel gamePanel) {
         super(x, y, hitboxWidth, hitboxHeight, maxSpeed, 0, GameData.GRAVITY, 0, 0, gamePanel);
         hasPicked = false;
-        isOutside = false;
+        isOutOfBound = false;
         this.id = id;
     }
 
@@ -30,7 +30,7 @@ public class Item extends Projectile {
                 this.x, this.y, this.hitboxWidth, this.hitboxHeight, this.maxSpeed,
                 this.id, this.gamePanel
         );
-        cloned.isOutside = this.isOutside;
+        cloned.isOutOfBound = this.isOutOfBound;
         cloned.hasPicked = this.hasPicked;
         return cloned;
     }

@@ -8,9 +8,9 @@ import java.awt.*;
 
 public class GamePanel extends JPanel implements Runnable {
     // Environment settings
-    final int PANEL_WIDTH = 1200;
-    final int PANEL_HEIGHT = 840;
-    final int HORIZON = PANEL_HEIGHT - 300;
+    public final static int PANEL_WIDTH = 1200;
+    public final static int PANEL_HEIGHT = 840;
+    public final static int HORIZON = PANEL_HEIGHT - 300;
     final int FPS = 60;
     final int NANO_SEC = 1_000_000_000;
     final int MILLI_SEC = 1_000;
@@ -68,7 +68,7 @@ public class GamePanel extends JPanel implements Runnable {
      * Updates the game state, including player movement, enemy behavior, and other game logic.
      * */
     public void update() {
-
+        gameData.player.update();
     }
 
     /**
@@ -78,9 +78,9 @@ public class GamePanel extends JPanel implements Runnable {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
-        g2.setColor(Color.white);
-        g2.fillRect(0, 0, 40, 60);
+        g2.setColor(Color.GREEN);
         g2.fillRect(0, HORIZON, PANEL_WIDTH, PANEL_HEIGHT - HORIZON);
+        gameData.player.render(g2);
         // Dispose of the graphics context to free up resources
         g2.dispose();
     }
