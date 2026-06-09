@@ -3,13 +3,7 @@ import java.awt.*;
 public class Player extends Entity {
     public final MoneyBag moneyBag;
     public Mountable mount;
-    public Item crown;
-    // Offset when facing left
-    public int crownXOffsetL;
-    public int crownYOffsetL;
-    // Offset when facing right
-    public int crownXOffsetR;
-    public int crownYOffsetR;
+    public PickedItem crown;
     KeyHandler keyInput;
 
     /**
@@ -22,39 +16,11 @@ public class Player extends Entity {
         this.keyInput = keyHandler;
         this.gamePanel = gamePanel;
         this.mount = mount;
-        crown = new Item(0, 0, 6, 2, 5, GameData.ID.CROWN_ID,
+        crown = new PickedItem(0, 0, 6, 2, 5, GameData.ID.CROWN_ID,
                 gamePanel);
         mount.isMounted = true;
         mount.anchorsPassenger(this);  // Anchor the player to the mount's position
         moneyBag = new MoneyBag(15, x, y);
-    }
-
-    /**
-     * Sets the offset values for the crown
-     *
-     * @param xOffsetL the horizontal offset for the crown when facing left
-     * @param yOffsetL the vertical offset for the crown when facing left
-     * @param xOffsetR the horizontal offset for the crown when facing right
-     * @param yOffsetR the vertical offset for the crown when facing right
-     * */
-    public void setCrownOffset(int xOffsetL, int yOffsetL, int xOffsetR, int yOffsetR) {
-        crownXOffsetL = xOffsetL * gamePanel.SCALE_IMAGE;
-        crownYOffsetL = yOffsetL * gamePanel.SCALE_IMAGE;
-        crownXOffsetR = xOffsetR * gamePanel.SCALE_IMAGE;
-        crownYOffsetR = yOffsetR * gamePanel.SCALE_IMAGE;
-    }
-
-    /**
-     * Anchors the crown to the player's head based on facing direction
-     * */
-    public void anchorsCrown() {
-        if (isFacingLeft) {
-            crown.x = x + crownXOffsetL;
-            crown.y = y - crownYOffsetL;
-        } else {
-            crown.x = x + crownXOffsetR;
-            crown.y = y - crownYOffsetR;
-        }
     }
 
     /**
@@ -76,11 +42,8 @@ public class Player extends Entity {
      *
      * @return the Item instance representing the lost crown that can be added to the game world as a dropped item
      * */
-    public Item loseCrown() {
-        crown.hasPicked = false;
-        Item lostCrown = crown.duplicate();  // Create a copy of the crown to drop on the ground
-        crown = null;
-        return lostCrown;
+    public PickedItem loseCrown() {
+
     }
 
     /**
@@ -94,8 +57,8 @@ public class Player extends Entity {
         }
         // Update player's actions based on key inputs while mounted
         if (keyInput.downPressed) {
-            Item tossedCoin = moneyBag.tossCoin();
-            gamePanel.gameData.allItems.add(tossedCoin);
+            PickedItem tossedCoin = moneyBag.tossCoin();
+            gamePanel.gameData.allPickedItems.add(tossedCoin);
         }
         if (keyInput.leftPressed) {
             isFacingLeft = true;
@@ -117,6 +80,5 @@ public class Player extends Entity {
         referenceCam.focusOn(this);
         mount.render(g2, referenceCam);
         super.render(g2, referenceCam);
-        crown.render(g2, referenceCam);
     }
 }

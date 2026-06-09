@@ -5,7 +5,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 public class MoneyBag implements Serializable {
-    private final ArrayList<Item> coins;
+    private final ArrayList<PickedItem> coins;
     private final int DROP_CHANCE = 2;
     public final int capacity;
     public BufferedImage image;
@@ -19,7 +19,7 @@ public class MoneyBag implements Serializable {
      * */
     public MoneyBag(int capacity, int dropX, int dropY) {
         this.capacity = capacity;
-        this.coins = new ArrayList<Item>(capacity);
+        this.coins = new ArrayList<PickedItem>(capacity);
         this.dropX = dropX;
         this.dropY = dropY;
     }
@@ -42,14 +42,14 @@ public class MoneyBag implements Serializable {
      *
      * @param coin the coin to be added
      * */
-    public void addCoin(Item coin) {
+    public void addCoin(PickedItem coin) {
         if (coin.id == GameData.ID.COIN_ID) {
             coins.add(coin);
             if (coins.size() > capacity) {
                 // 1/2 = 50% chance
                 int rand = (int) (Math.random() * (DROP_CHANCE) + 1);
                 if (rand == 1) {
-                    Item droppedCoin = tossCoin();
+                    PickedItem droppedCoin = tossCoin();
                     droppedCoin.isOutOfBound = true;
                 }
             }
@@ -61,9 +61,9 @@ public class MoneyBag implements Serializable {
      *
      * @return the coin that is removed
      * */
-    public Item tossCoin() {
+    public PickedItem tossCoin() {
         if (!coins.isEmpty()) {
-            Item tossedCoin = coins.remove(coins.size() - 1);
+            PickedItem tossedCoin = coins.remove(coins.size() - 1);
             tossedCoin.hasPicked = false;
             tossedCoin.x = dropX;
             tossedCoin.y = dropY;

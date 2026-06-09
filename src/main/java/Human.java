@@ -1,6 +1,9 @@
 public class Human extends Entity {
     public GameData.ID id;
     public Structure habitat;
+    public int numCoins;
+    public int maxCoins;
+    public PickedItem equipping;
 
     /**
      * Initializes the entity with its position, hitbox dimensions, and movement parameters.

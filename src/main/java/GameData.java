@@ -54,7 +54,7 @@ public class GameData implements Serializable {
     public GamePanel gamePanel;
     public Camera camera;
     public Player player;
-    public ArrayList<Item> allItems;
+    public ArrayList<PickedItem> allPickedItems;
     public ArrayList<Human> allHumans;
     public ArrayList<Structure> allStructures;
     public ArrayList<Enemy> allEnemies;
@@ -69,7 +69,7 @@ public class GameData implements Serializable {
      * */
     public GameData(KeyHandler keyHandler, GamePanel gamePanel) {
         this.gamePanel = gamePanel;
-        allItems = new ArrayList<>();
+        allPickedItems = new ArrayList<>();
         allHumans = new ArrayList<>();
         allStructures = new ArrayList<>();
         allEnemies = new ArrayList<>();
@@ -89,9 +89,6 @@ public class GameData implements Serializable {
         // Setup player
         player = new Player(keyHandler, gamePanel, originHorse);
         player.setImagesFromPaths(playerImgL, playerImgR);
-        player.setCrownOffset(3, 2, 8, 2);
-        player.anchorsCrown();
-        player.crown.setImagesFromPaths(crownImgL, crownImgR);
     }
 
     /**

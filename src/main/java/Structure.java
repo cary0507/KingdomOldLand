@@ -1,11 +1,7 @@
 import javax.imageio.ImageIO;
-import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
-import java.io.Serializable;
-import java.util.ArrayList;
 
 public class Structure extends Entity {
     public int maxHP;
@@ -51,9 +47,9 @@ public class Structure extends Entity {
      * Drops one coin at the center of the structure when it is destroyed
       * @return an Item object representing the dropped coin, positioned at the center of the structure
      * */
-    public Item rewardCoin() {
+    public PickedItem rewardCoin() {
         int centerX = (int) (x + hitboxWidth / 2);
-        Item coin = new Item(centerX, y, 20, 20, 6, GameData.ID.COIN_ID, gamePanel);
+        PickedItem coin = new PickedItem(centerX, y, 20, 20, 6, GameData.ID.COIN_ID, gamePanel);
         return coin;
     }
 
