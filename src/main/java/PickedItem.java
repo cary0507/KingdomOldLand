@@ -7,8 +7,9 @@ public class PickedItem {
         this.imgIndex = 0;
     }
 
-    public Projectile toss(int x, int y, int hitboxWidth, int hitboxHeight, double maxSpeed, GamePanel gamePanel) {
-        Projectile projectile =  new Projectile(x, y, hitboxWidth, hitboxHeight, maxSpeed, gamePanel);
+    public Projectile toss(int x, int y, int rawHitboxWidth, int rawHitboxHeight,
+                           double maxSpeed, GamePanel gamePanel) {
+        Projectile projectile =  new Projectile(x, y, rawHitboxWidth, rawHitboxHeight, maxSpeed, gamePanel);
         return projectile;
     }
 }

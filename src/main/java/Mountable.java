@@ -2,6 +2,7 @@ public class Mountable extends Entity {
     public boolean isMounted;  // Whether the mount is being ridden or free
     public final int MAX_STAMINA;
     public int stamina;
+    public double curSpeed;
     public boolean isFrightened;  // Whether the mount is currently frightened and cannot move
     // Offset values when facing left
     private int passengerXOffsetL;
@@ -15,15 +16,14 @@ public class Mountable extends Entity {
      *
      * @param x the initial x-coordinate of the mountable entity
      * @param y the initial y-coordinate of the mountable entity
-     * @param hitboxWidth the width of the mountable entity's hitbox
-     * @param hitboxHeight the height of the mountable entity's hitbox
+     * @param rawHitboxWidth the width in tiles of the mountable entity's hitbox
+     * @param rawHitboxHeight the height in tiles of the mountable entity's hitbox
      * @param maxSpeed the maximum speed the mountable entity can reach
-     * @param maxStamina the maximum stamina of the mountable entity, determines how long it can be ridden before
-     *                   needing to rest
+     * @param maxStamina the maximum stamina of the mountable entity, determines the speed of the mount
      * */
-    public Mountable(int x, int y, int hitboxWidth, int hitboxHeight, double maxSpeed, int maxStamina,
+    public Mountable(int x, int y, int rawHitboxWidth, int rawHitboxHeight, double maxSpeed, int maxStamina,
                      GamePanel gamePanel) {
-        super(x, y, hitboxWidth, hitboxHeight, maxSpeed, gamePanel);
+        super(x, y, rawHitboxWidth, rawHitboxHeight, maxSpeed, gamePanel);
         this.isMounted = false;
         this.MAX_STAMINA = maxStamina;
         this.stamina = maxStamina;
@@ -40,10 +40,10 @@ public class Mountable extends Entity {
      * @param yOffsetR the vertical offset for the passenger when the mount is facing right
      * */
     public void setPassengerOffset(int xOffsetL, int yOffsetL, int xOffsetR, int yOffsetR) {
-        passengerXOffsetL = xOffsetL * gamePanel.SCALE_FACTOR;
-        passengerYOffsetL = yOffsetL * gamePanel.SCALE_FACTOR;
-        passengerXOffsetR = xOffsetR * gamePanel.SCALE_FACTOR;
-        passengerYOffsetR = yOffsetR * gamePanel.SCALE_FACTOR;
+        passengerXOffsetL = xOffsetL * GamePanel.SCALE_PIXEL;
+        passengerYOffsetL = yOffsetL * GamePanel.SCALE_PIXEL;
+        passengerXOffsetR = xOffsetR * GamePanel.SCALE_PIXEL;
+        passengerYOffsetR = yOffsetR * GamePanel.SCALE_PIXEL;
     }
 
     /**

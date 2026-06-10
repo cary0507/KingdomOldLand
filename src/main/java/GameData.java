@@ -40,39 +40,44 @@ public class GameData implements Serializable {
             "/raw images/Coin/Thrown/coin1.png"
     };
     // Object IDs
-    public enum ID {
-        // Item's ID
-        CROWN_ID,
-        COIN_ID,
-        BOW_ID,
-        HAMMER_ID,
-        // Human's job ID
-        FUGITIVE_ID,
-        VILLAGER_ID,
-        HUNTER_ID,
-        BUILDER_ID,
-        BANKER_ID,
-        // Structure's ID
-        DIRT_ID,
-        PLAIN_ID,
-        HEADQUARTER_ID,
-        TREE_ID,
-        GRASS_ID,
-        TEMPLE_ID,
-        WALL_ID,
-        ARCHERY_TOWER_ID,
-        PORTAL_ID,
-        CAMP_ID,
-        HORSE_CORRAL_ID,
-        BOW_SHELF_ID,
-        HAMMER_SHELF_ID
+    public enum ItemID {
+        CROWN,
+        COIN,
+        BOW,
+        HAMMER,
     }
-    // Objects
+    public enum JobID {
+        FUGITIVE,
+        VILLAGER,
+        HUNTER,
+        BUILDER,
+        BANKER
+    }
+    public enum ChunkID {
+        SPAWN_CHUNK,
+        DIRT,
+        PLAIN
+    }
+    public enum StructureID {
+        HEADQUARTER,
+        TREE,
+        GRASS,
+        TEMPLE,
+        WALL,
+        ARCHERY_TOWER,
+        PORTAL,
+        CAMP,
+        HORSE_CORRAL,
+        BOW_SHELF,
+        HAMMER_SHELF
+    }
+    // Game objects
     public GamePanel gamePanel;
     public Camera camera;
     public Player player;
     public ArrayList<PickedItem> allPickedItems;
     public ArrayList<Human> allHumans;
+    public ArrayList<Chunk> allChunks;
     public ArrayList<Structure> allStructures;
     public ArrayList<Enemy> allEnemies;
     public ArrayList<Projectile> allProjectiles;
@@ -88,24 +93,31 @@ public class GameData implements Serializable {
         this.gamePanel = gamePanel;
         allPickedItems = new ArrayList<>();
         allHumans = new ArrayList<>();
+        allChunks = new ArrayList<>();
         allStructures = new ArrayList<>();
         allEnemies = new ArrayList<>();
         allProjectiles = new ArrayList<>();
         allMounts = new ArrayList<>();
         // Setup camera
         camera = new Camera(gamePanel, 0, 0, 400, 100);
+        // Set up the map and player with default mount
+        int[] map = getLandCode(2, 2);
+        initLand(map);
+        // Setup player
+        player = new Player(keyHandler, gamePanel, allMounts.get(0));
+        player.setImagesFromPaths(playerImgL, playerImgR);
+    }
+
+    public void setUpHorse(int spawnX) {
         // Setup default horse
         Mountable originHorse = new Mountable(
-                (int) (GamePanel.PANEL_WIDTH / 2),
+                spawnX,
                 GamePanel.HORIZON, 43, 29, 5.0, 100, gamePanel
         );
         originHorse.y -= originHorse.hitboxHeight;
         originHorse.setImagesFromPaths(brownHorseImgL, brownHorseImgR);
         originHorse.setPassengerOffset(14, 7, 12, 7);
         allMounts.add(originHorse);
-        // Setup player
-        player = new Player(keyHandler, gamePanel, originHorse);
-        player.setImagesFromPaths(playerImgL, playerImgR);
     }
 
     /**
@@ -113,7 +125,7 @@ public class GameData implements Serializable {
      * Number 0 is always the spawn chunk at the center of map
      *
      * @param landRadius the number of chunks from left/right side of the spawn chunk
-     * @param numChunkOptions the total number of variations of chunks (Always >= 1)
+     * @param numChunkOptions the total number of variations of chunks other than the spawn chunk (Always >= 1)
      * @return the codes stored in an int array
      * */
     public int[] getLandCode(int landRadius, int numChunkOptions) {
@@ -134,37 +146,23 @@ public class GameData implements Serializable {
     /**
      * Generates structures based on land code
      * */
-    public void parseLandCode(int[] landCode) {
-        int curX = 0;  // Makes it a variable independent to i because chunks may have different sizes
-        for (int i  = 0; i < landCode.length; i++) {
-            BufferedImage[] img;
-            int code =  landCode[i];
-
+    public void initLand(int[] landCode) {
+        int curChunkX = 0;  // Acts like a cursor
+        for (int code : landCode) {
+            // Set up the background chunk
+            ChunkID chunkID = ChunkID.values()[code];
+            // Creates the chunk
+            Chunk curChunk = new Chunk(
+                    curChunkX, GamePanel.HORIZON - 2 * GamePanel.SCALE_PIXEL, chunkID, chunksImg[code]
+            );
+            curChunkX += curChunk.hitboxWidth;  // Moves to the next Chunk's start
+            allChunks.add(curChunk);  // Adds chunk to the game
             // Parse different codes
             if (code == 0) {  // Spawn chunk is guaranteed to have specific structures
-                img = new BufferedImage[]{pathToImage(chunksImg[0])};  // Match parameters for setImage
-
-                Structure spawnChunk = new Structure(
-                        curX, GamePanel.HORIZON - 1,
-                        img[0].getWidth(),img[0].getHeight() - 1, -1,
-                        ID.DIRT_ID, gamePanel
-                );
-                spawnChunk.setImages(img, img);
-
-                curX += spawnChunk.hitboxWidth;
-                allStructures.add(spawnChunk);
+                int spawnX = (int) (curChunkX - 2 * curChunk.hitboxWidth / 3);
+                setUpHorse(spawnX);
             } else {  // Other cases
-                img = new BufferedImage[]{pathToImage(chunksImg[code])};
 
-                Structure curChunk = new Structure(
-                        curX, GamePanel.HORIZON - 1,
-                        img[0].getWidth(),img[0].getHeight() - 1, -1,
-                        ID.DIRT_ID, gamePanel
-                );
-                curChunk.setImages(img, img);
-
-                curX += curChunk.hitboxWidth;
-                allStructures.add(curChunk);
             }
         }
     }

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 public class MoneyBag implements Serializable {
     private final ArrayList<PickedItem> coins;
-    private final int DROP_CHANCE = 2;
     public final int capacity;
     public String imagePath;
     public int dropX;
@@ -30,10 +29,10 @@ public class MoneyBag implements Serializable {
      * @param coin the coin to be added
      * */
     public void addCoin(Projectile coin) {
-        if (coin.data.getId() == GameData.ID.COIN_ID) {
+        final int DROP_CHANCE = 2;  // 1/2 = 50% chance
+        if (coin.data.getId() == GameData.ItemID.COIN) {
             coins.add(coin.getPicked(coin.data));
             if (coins.size() > capacity) {
-                // 1/2 = 50% chance
                 int rand = (int) (Math.random() * (DROP_CHANCE) + 1);
                 if (rand == 1) {
                     Projectile droppedCoin = tossCoin();

@@ -15,7 +15,7 @@ public class Main {
         mainScreen.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         mainScreen.setResizable(false);
         // Icon setup
-        ImageIcon icon = new ImageIcon("src/main/resources/images/crown icon.jpg");
+        ImageIcon icon = new ImageIcon("/raw images/crown icon.jpg");
         mainScreen.setIconImage(icon.getImage());
         // Apply the game panel layout
         GamePanel gamePanel = new GamePanel();

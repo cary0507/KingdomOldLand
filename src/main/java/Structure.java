@@ -1,25 +1,23 @@
-import javax.imageio.ImageIO;
-import javax.swing.*;
-import java.awt.*;
 public class Structure extends Entity {
     public int maxHP;
     public int curHP;
-    public GameData.ID id;
-    public GameData.ID[] blockedID;
+    public GameData.StructureID id;
+    public GameData.ItemID[] blockedID;
 
     /**
      * Initializes the structure with its position, dimensions, hit points, and image path.
      *
      * @param x the x-coordinate of the structure
      * @param y the y-coordinate of the structure
-     * @param hitboxWidth the width of the structure
-     * @param hitboxHeight the height of the structure
+     * @param rawHitboxWidth the width in tiles of the structure
+     * @param rawHitboxHeight the height in tiles of the structure
      * @param maxHP the maximum hit points of the structure
      * @param id the id of the object
      * @param gamePanel the screen that the object appear on
      */
-    public Structure(int x, int y, int hitboxWidth, int hitboxHeight, int maxHP, GameData.ID id, GamePanel gamePanel) {
-        super(x, y, hitboxWidth, hitboxHeight, 0, gamePanel);
+    public Structure(int x, int y, int rawHitboxWidth, int rawHitboxHeight, int maxHP, GameData.StructureID id,
+                     GamePanel gamePanel) {
+        super(x, y, rawHitboxWidth, rawHitboxHeight, 0, gamePanel);
         this.gamePanel = gamePanel;
         this.maxHP = maxHP;
         this.curHP = maxHP;
@@ -29,7 +27,7 @@ public class Structure extends Entity {
     /**
      * Determines Entity with which IDs cannot go through
      * */
-    public void setBlockedID(GameData.ID[] blockedID) {
+    public void setBlockedID(GameData.ItemID[] blockedID) {
         this.blockedID = blockedID;
     }
 

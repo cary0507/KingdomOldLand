@@ -13,7 +13,7 @@ public class UpgradableStruct extends ContainerStruct {
      * @param relativePos  relative inventory/slot positions (passed to parent)
      * @param gamePanel    reference to the GamePanel the structure belongs to
      */
-    public UpgradableStruct(int x, int y, String[][] levelImgPath, GameData.ID id, int[][] relativePos,
+    public UpgradableStruct(int x, int y, String[][] levelImgPath, GameData.StructureID id, int[][] relativePos,
                             GamePanel gamePanel) {
         super(x, y, 0, 0, 0, id, relativePos, gamePanel);
         LEVEL_IMG_PATH = levelImgPath;

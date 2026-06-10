@@ -11,7 +11,7 @@ public class GamePanel extends JPanel implements Runnable {
     public static final int PANEL_WIDTH = 1200;
     public static final int PANEL_HEIGHT = 840;
     public static final int HORIZON = PANEL_HEIGHT - 300;
-    public static final int SCALE_FACTOR = 4;
+    public static final int SCALE_PIXEL = 4;  // Pixel sizes of a square tile
     final int FPS = 60;
     final int NANO_SEC = 1_000_000_000;
     final int MILLI_SEC = 1_000;
@@ -32,8 +32,6 @@ public class GamePanel extends JPanel implements Runnable {
         this.setFocusable(true);  // Focus on this game panel
         // Setup saved game data
         gameData = new GameData(keyboard, this);
-        int[] map = gameData.getLandCode(1, 2);
-        gameData.parseLandCode(map);
     }
 
     public void startGameThread() {
@@ -81,10 +79,16 @@ public class GamePanel extends JPanel implements Runnable {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
+        // Renders the player
+        gameData.player.render(g2, gameData.camera);
+        // Renders all structures
         for (Structure structure : gameData.allStructures) {
             structure.render(g2, gameData.camera);
         }
-        gameData.player.render(g2, gameData.camera);
+        // Renders all chunks
+        for (Chunk chunk : gameData.allChunks) {
+            chunk.render(g2, gameData.camera);
+        }
         // Dispose of the graphics context to free up resources
         g2.dispose();
     }

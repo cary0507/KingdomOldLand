@@ -16,7 +16,7 @@ public class Player extends Entity {
         this.gamePanel = gamePanel;
         this.mount = mount;
         holdingItem = new PickedItem(new ItemData(
-                GameData.ID.CROWN_ID, 3, -2, 8, -2,
+                GameData.ItemID.CROWN, 3, -2, 8, -2,
                 GameData.crownImgL, GameData.crownImgR)
         );
         mount.isMounted = true;

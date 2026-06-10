@@ -5,7 +5,7 @@ public class ContainerStruct extends Structure {
     /**
      * Initializes the structure with its position, hitbox dimensions, health points, and the entities it contains.
      * */
-    public ContainerStruct(int x, int y, int width, int height, int maxHP, GameData.ID id, int[][] relativePos,
+    public ContainerStruct(int x, int y, int width, int height, int maxHP, GameData.StructureID id, int[][] relativePos,
                            GamePanel gamePanel) {
         super(x, y, width, height, maxHP, id, gamePanel);
         this.relativePos = relativePos;

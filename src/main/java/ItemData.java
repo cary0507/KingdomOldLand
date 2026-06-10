@@ -1,5 +1,5 @@
 public class ItemData {
-    private final GameData.ID id;
+    private final GameData.ItemID id;
     public String[] itemIconPathL;
     public String[] itemIconPathR;
     public String[] thrownImgPath;
@@ -12,13 +12,13 @@ public class ItemData {
     /**
      * Constructor for PickedItem
      * */
-    public ItemData(GameData.ID id, int iconXOffsetL, int iconYOffsetL, int iconXOffsetR, int iconYOffsetR,
+    public ItemData(GameData.ItemID id, int iconXOffsetL, int iconYOffsetL, int iconXOffsetR, int iconYOffsetR,
                     String[] itemIconPathL, String[] itemIconPathR) {
         this.id = id;
-        this.iconXOffsetL = iconXOffsetL * GamePanel.SCALE_FACTOR;
-        this.iconYOffsetL = iconYOffsetL * GamePanel.SCALE_FACTOR;
-        this.iconXOffsetR = iconXOffsetR * GamePanel.SCALE_FACTOR;
-        this.iconYOffsetR = iconYOffsetR * GamePanel.SCALE_FACTOR;
+        this.iconXOffsetL = iconXOffsetL * GamePanel.SCALE_PIXEL;
+        this.iconYOffsetL = iconYOffsetL * GamePanel.SCALE_PIXEL;
+        this.iconXOffsetR = iconXOffsetR * GamePanel.SCALE_PIXEL;
+        this.iconYOffsetR = iconYOffsetR * GamePanel.SCALE_PIXEL;
         this.itemIconPathL = itemIconPathL;
         this.itemIconPathR = itemIconPathR;
     }
@@ -26,13 +26,13 @@ public class ItemData {
     /**
      * Constructor for items as a Projectile
      * */
-    public ItemData(GameData.ID id, String[] thrownImgPath, boolean canPickUp) {
+    public ItemData(GameData.ItemID id, String[] thrownImgPath, boolean canPickUp) {
         this.id = id;
         this.thrownImgPath = thrownImgPath;
         this.canPickUp = canPickUp;
     }
 
-    public GameData.ID getId() {
+    public GameData.ItemID getId() {
         return id;
     }
 }

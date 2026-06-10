@@ -13,12 +13,12 @@ public class Projectile extends Entity {
      *
      * @param x            the initial x-coordinate of the projectile
      * @param y            the initial y-coordinate of the projectile
-     * @param hitboxWidth  the width of the projectile's hitbox
-     * @param hitboxHeight the height of the projectile's hitbox
+     * @param rawHitboxWidth  the width in tiles of the projectile's hitbox
+     * @param rawHitboxHeight the height in tiles of the projectile's hitbox
      * @param maxSpeed     the maximum speed the projectile can reach
      */
-    public Projectile(int x, int y, int hitboxWidth, int hitboxHeight, double maxSpeed, GamePanel gamePanel) {
-        super(x, y, hitboxWidth, hitboxHeight, maxSpeed, gamePanel);
+    public Projectile(int x, int y, int rawHitboxWidth, int rawHitboxHeight, double maxSpeed, GamePanel gamePanel) {
+        super(x, y, rawHitboxWidth, rawHitboxHeight, maxSpeed, gamePanel);
     }
 
     /**

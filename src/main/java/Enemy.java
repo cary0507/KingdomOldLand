@@ -9,14 +9,14 @@ public class Enemy extends Entity {
      *
      * @param x            the initial x-coordinate of the entity
      * @param y            the initial y-coordinate of the entity
-     * @param hitboxWidth  the width of the entity's hitbox
-     * @param hitboxHeight the height of the entity's hitbox
+     * @param rawHitboxWidth  the width in tiles of the entity's hitbox
+     * @param rawHitboxHeight the height in tiles of the entity's hitbox
      * @param maxSpeed     the maximum speed the entity can reach
      * @param gamePanel
      *
      */
-    public Enemy(int x, int y, int hitboxWidth, int hitboxHeight, double maxSpeed, GamePanel gamePanel) {
-        super(x, y, hitboxWidth, hitboxHeight, maxSpeed, gamePanel);
+    public Enemy(int x, int y, int rawHitboxWidth, int rawHitboxHeight, double maxSpeed, GamePanel gamePanel) {
+        super(x, y, rawHitboxWidth, rawHitboxHeight, maxSpeed, gamePanel);
     }
 
     /**

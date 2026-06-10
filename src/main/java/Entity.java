@@ -1,8 +1,6 @@
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.io.Serializable;
-import javax.imageio.ImageIO;
 
 public class Entity implements Serializable {
     public final double maxSpeed;
@@ -16,6 +14,7 @@ public class Entity implements Serializable {
     public boolean isFacingLeft;    // Since it's a 2D game and there's only left and right
                                     // This value only affects which image to use, not the actual movement direction
     public int imgIndex;            // Determines which image to use for animation
+    private long animeDuration;     // How long before switching to the next animation of image in nanoseconds
     public BufferedImage[] leftImages;
     public BufferedImage[] rightImages;
     // Environment
@@ -25,16 +24,16 @@ public class Entity implements Serializable {
      * Initializes the entity with its position, hitbox dimensions, and movement parameters.
      * @param x the initial x-coordinate of the entity
      * @param y the initial y-coordinate of the entity
-     * @param hitboxWidth the width of the entity's image
-     * @param hitboxHeight the height of the entity's image
+     * @param rawHitboxWidth the width in tiles of the entity's image
+     * @param rawHitboxHeight the height in tiles of the entity's image
      * @param maxSpeed the maximum speed the entity can reach
      * */
-    public Entity(int x, int y, int hitboxWidth, int hitboxHeight, double maxSpeed, GamePanel gamePanel) {
+    public Entity(int x, int y, int rawHitboxWidth, int rawHitboxHeight, double maxSpeed, GamePanel gamePanel) {
         this.gamePanel = gamePanel;
         this.x = x;
         this.y = y;
-        this.hitboxWidth = hitboxWidth * gamePanel.SCALE_FACTOR;  // Scale up the image
-        this.hitboxHeight = hitboxHeight * gamePanel.SCALE_FACTOR;
+        this.hitboxWidth = rawHitboxWidth * GamePanel.SCALE_PIXEL;  // Scale up the image
+        this.hitboxHeight = rawHitboxHeight * GamePanel.SCALE_PIXEL;
         this.maxSpeed = maxSpeed;
         imgIndex = 0;
     }
@@ -94,12 +93,16 @@ public class Entity implements Serializable {
         }
     }
 
+    /**
+     * Renders the holding item
+     * */
     public void renderItem(Graphics2D g2d, Camera referenceCam) {
-        if (holdingItem == null) {
+        if (holdingItem == null) {  // Prevents null pointer exception if the owner is not holding anything
             return;
         }
         String path;
         int itemX, itemY;
+        // Resolve the facing
         if (isFacingLeft) {
             path = holdingItem.data.itemIconPathL[holdingItem.imgIndex];
             itemX = x + holdingItem.data.iconXOffsetL;
@@ -115,8 +118,8 @@ public class Entity implements Serializable {
         }
         int screenX = referenceCam.convertX(itemX);
         int screenY = referenceCam.convertY(itemY);
-        int onScreenWidth = img.getWidth() * gamePanel.SCALE_FACTOR;
-        int onScreenHeight = img.getHeight() * gamePanel.SCALE_FACTOR;
+        int onScreenWidth = img.getWidth() * GamePanel.SCALE_PIXEL;
+        int onScreenHeight = img.getHeight() * GamePanel.SCALE_PIXEL;
         g2d.drawImage(img, screenX, screenY, onScreenWidth, onScreenHeight, null);
     }
 
@@ -127,6 +130,7 @@ public class Entity implements Serializable {
      * */
     public void render(Graphics2D g2d, Camera referenceCam) {
         BufferedImage img;
+        // Check the facing
         if (isFacingLeft) {
             img = leftImages[imgIndex];
         } else {
@@ -134,8 +138,8 @@ public class Entity implements Serializable {
         }
         int screenX = referenceCam.convertX(this.x);
         int screenY = referenceCam.convertY(this.y);
-        int onScreenWidth = img.getWidth() * gamePanel.SCALE_FACTOR;
-        int onScreenHeight = img.getHeight() * gamePanel.SCALE_FACTOR;
+        int onScreenWidth = img.getWidth() * GamePanel.SCALE_PIXEL;
+        int onScreenHeight = img.getHeight() * GamePanel.SCALE_PIXEL;
         g2d.drawImage(img, screenX, screenY, onScreenWidth, onScreenHeight, null);
     }
 }
