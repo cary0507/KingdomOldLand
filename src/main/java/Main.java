@@ -7,7 +7,6 @@ import javax.swing.JFrame;
 import javax.swing.ImageIcon;
 import java.io.FileNotFoundException;
 
-
 public class Main {
     public static void main(String[] args) throws FileNotFoundException {
         // Create the main screen

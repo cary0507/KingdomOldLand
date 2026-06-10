@@ -1,4 +1,6 @@
-public class PickedItem {
+import java.io.Serializable;
+
+public class PickedItem implements Serializable {
     public final ItemData data;
     public int imgIndex;
 

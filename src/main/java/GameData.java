@@ -39,6 +39,9 @@ public class GameData implements Serializable {
     public static String[] coinImg = {
             "/raw images/Coin/Thrown/coin1.png"
     };
+    public static String[] wallImgL = {
+
+    };
     // Object IDs
     public enum ItemID {
         CROWN,
@@ -134,7 +137,7 @@ public class GameData implements Serializable {
         int mid = (int) ((totalChunks - 1) / 2);  // Explicit is better than implicit
         for (int i = 0; i < landCode.length; i++) {
             if (i != mid) {
-                int rand = (int) (Math.random() * (numChunkOptions) + 1);
+                int rand = (int) (Math.random() * (numChunkOptions) + 1);  // Randomize the land code
                 landCode[i] = rand;
             } else {
                 landCode[i] = 0;
@@ -161,8 +164,6 @@ public class GameData implements Serializable {
             if (code == 0) {  // Spawn chunk is guaranteed to have specific structures
                 int spawnX = (int) (curChunkX - 2 * curChunk.hitboxWidth / 3);
                 setUpHorse(spawnX);
-            } else {  // Other cases
-
             }
         }
     }

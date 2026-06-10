@@ -1,7 +1,8 @@
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.Serializable;
 
-public class Chunk {
+public class Chunk implements Serializable {
     public final int x, y;
     public final int hitboxWidth, hitboxHeight;
     public GameData.ChunkID id;

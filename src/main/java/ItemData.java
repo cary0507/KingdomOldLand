@@ -1,4 +1,6 @@
-public class ItemData {
+import java.io.Serializable;
+
+public class ItemData implements Serializable {
     private final GameData.ItemID id;
     public String[] itemIconPathL;
     public String[] itemIconPathR;
