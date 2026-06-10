@@ -67,7 +67,7 @@ public class Entity implements Serializable {
      * @param leftImages the images when facing left
      * @param rightImages the images when facing right
      * */
-    private void setImages(BufferedImage[] leftImages, BufferedImage[] rightImages) {
+    public void setImages(BufferedImage[] leftImages, BufferedImage[] rightImages) {
         this.leftImages = leftImages;
         this.rightImages = rightImages;
     }

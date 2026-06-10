@@ -96,8 +96,8 @@ public class GameData implements Serializable {
         camera = new Camera(gamePanel, 0, 0, 400, 100);
         // Setup default horse
         Mountable originHorse = new Mountable(
-                (int) (gamePanel.PANEL_WIDTH / 2),
-                gamePanel.HORIZON, 43, 29, 5.0, 100, gamePanel
+                (int) (GamePanel.PANEL_WIDTH / 2),
+                GamePanel.HORIZON, 43, 29, 5.0, 100, gamePanel
         );
         originHorse.y -= originHorse.hitboxHeight;
         originHorse.setImagesFromPaths(brownHorseImgL, brownHorseImgR);
@@ -119,7 +119,7 @@ public class GameData implements Serializable {
     public int[] getLandCode(int landRadius, int numChunkOptions) {
         int totalChunks = landRadius * 2 + 1;
         int[] landCode = new int[totalChunks];
-        int mid = (int) ((landRadius - 1) / 2);  // Explicit is better than implicit
+        int mid = (int) ((totalChunks - 1) / 2);  // Explicit is better than implicit
         for (int i = 0; i < landCode.length; i++) {
             if (i != mid) {
                 int rand = (int) (Math.random() * (numChunkOptions) + 1);
@@ -131,19 +131,40 @@ public class GameData implements Serializable {
         return landCode;
     }
 
+    /**
+     * Generates structures based on land code
+     * */
     public void parseLandCode(int[] landCode) {
-        int curX = 0;
+        int curX = 0;  // Makes it a variable independent to i because chunks may have different sizes
         for (int i  = 0; i < landCode.length; i++) {
-            BufferedImage img;
+            BufferedImage[] img;
             int code =  landCode[i];
-            if (code == 0) {
-                img = pathToImage(chunksImg[0]);
+
+            // Parse different codes
+            if (code == 0) {  // Spawn chunk is guaranteed to have specific structures
+                img = new BufferedImage[]{pathToImage(chunksImg[0])};  // Match parameters for setImage
+
                 Structure spawnChunk = new Structure(
-                        curX, gamePanel.HORIZON - 1,
-                        img.getWidth(),img.getHeight() - 1, -1,
+                        curX, GamePanel.HORIZON - 1,
+                        img[0].getWidth(),img[0].getHeight() - 1, -1,
                         ID.DIRT_ID, gamePanel
                 );
+                spawnChunk.setImages(img, img);
+
+                curX += spawnChunk.hitboxWidth;
                 allStructures.add(spawnChunk);
+            } else {  // Other cases
+                img = new BufferedImage[]{pathToImage(chunksImg[code])};
+
+                Structure curChunk = new Structure(
+                        curX, GamePanel.HORIZON - 1,
+                        img[0].getWidth(),img[0].getHeight() - 1, -1,
+                        ID.DIRT_ID, gamePanel
+                );
+                curChunk.setImages(img, img);
+
+                curX += curChunk.hitboxWidth;
+                allStructures.add(curChunk);
             }
         }
     }

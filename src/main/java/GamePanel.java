@@ -32,6 +32,8 @@ public class GamePanel extends JPanel implements Runnable {
         this.setFocusable(true);  // Focus on this game panel
         // Setup saved game data
         gameData = new GameData(keyboard, this);
+        int[] map = gameData.getLandCode(1, 2);
+        gameData.parseLandCode(map);
     }
 
     public void startGameThread() {
@@ -75,11 +77,13 @@ public class GamePanel extends JPanel implements Runnable {
      * Render the components with override codes from the original method
      * */
     @Override
+
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
-        g2.setColor(Color.GREEN);
-        g2.fillRect(gameData.camera.convertX(0), HORIZON, PANEL_WIDTH, PANEL_HEIGHT - HORIZON);
+        for (Structure structure : gameData.allStructures) {
+            structure.render(g2, gameData.camera);
+        }
         gameData.player.render(g2, gameData.camera);
         // Dispose of the graphics context to free up resources
         g2.dispose();
