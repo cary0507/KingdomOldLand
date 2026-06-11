@@ -13,7 +13,7 @@ public class PickedItem implements Serializable {
     }
 
     public Projectile toss(int x, int y, double maxSpeed, GamePanel gamePanel) {
-        Projectile projectile = new Projectile(x, y, maxSpeed, gamePanel);
+        Projectile projectile = new Projectile(x, y, maxSpeed, gamePanel, this.data);
         return projectile;
     }
 }

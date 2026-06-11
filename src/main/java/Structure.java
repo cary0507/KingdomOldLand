@@ -34,7 +34,9 @@ public class Structure extends Entity {
      * */
     public Projectile rewardCoin() {
         int centerX = (int) (x + hitboxWidth / 2);
-        Projectile coin = new Projectile(centerX, y, 6, gamePanel);
+        ItemData coinData = new ItemData(GameData.ItemID.COIN, GameData.coinImg, true);
+        Projectile coin = new Projectile(centerX, y, 6, gamePanel,  coinData);
+        coin.setImagesFromPaths(coin.data.thrownImgPath, coin.data.thrownImgPath);
         return coin;
     }
 }

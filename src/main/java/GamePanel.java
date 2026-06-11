@@ -92,14 +92,49 @@ public class GamePanel extends JPanel implements Runnable {
         }
         // Update player data
         gameData.player.update();
-        // Update all mounts
-        for (Mountable mount : gameData.allMounts) {
+        // Update each mount
+        for (int i = 0; i < gameData.allMounts.size(); i++) {
+            Mountable mount = gameData.allMounts.get(i);
             mount.update();
         }
-        for (Structure structure : gameData.allStructures) {
+
+        // Update each structure
+        for (int i = 0; i < gameData.allStructures.size(); i++) {
+            Structure structure = gameData.allStructures.get(i);
             structure.update();
         }
-        for (Chunk chunk : gameData.allChunks) {
+
+        // Update each projectile
+        for (int i = 0; i < gameData.allProjectiles.size(); i++) {
+            Projectile projectile = gameData.allProjectiles.get(i);
+            projectile.update();
+            // Check if this projectile is a coin
+            switch (projectile.data.getId()) {
+                case COIN:
+                    // The player will pick up the coin if they collides
+                    if (gameData.isInside(projectile, gameData.player)) {
+                        gameData.player.moneyBag.addCoin(projectile);
+                        gameData.allProjectiles.remove(projectile);
+                    }
+                    break;
+            }
+        }
+
+        // Update each human
+        for (int i = 0; i < gameData.allHumans.size(); i++) {
+            Human human = gameData.allHumans.get(i);
+            human.update();
+        }
+
+        // Update each enemy
+        for (int i = 0; i < gameData.allEnemies.size(); i++) {
+            Enemy enemy = gameData.allEnemies.get(i);
+            enemy.update();
+        }
+
+        // Update each chunk
+        for (int i = 0; i < gameData.allChunks.size(); i++) {
+            Chunk chunk = gameData.allChunks.get(i);
             chunk.update(gameData.player);
         }
         // The order of the update matters because if camera is updated first, it will take some delay for the camera
@@ -124,22 +159,26 @@ public class GamePanel extends JPanel implements Runnable {
             Color moonColor = new Color(133, 147, 154);
             gameData.moon.render(g2d, 40 * SCALE_PIXEL, 40 * SCALE_PIXEL, moonColor);
         }
-
         // Renders all structures
         for (Structure structure : gameData.allStructures) {
             structure.render(g2d, gameData.camera);
         }
-
+        for (Human human : gameData.allHumans) {
+            human.render(g2d, gameData.camera);
+        }
+        for (Enemy enemy: gameData.allEnemies) {
+            enemy.render(g2d, gameData.camera);
+        }
         // Renders all mounts
         for (Mountable mount : gameData.allMounts) {
             mount.render(g2d, gameData.camera);
         }
-
         // Renders the player
         gameData.player.render(g2d, gameData.camera);
         gameData.player.moneyBag.render(g2d);
-
-        // Renders all chunks
+        for (Projectile projectile : gameData.allProjectiles) {
+            projectile.render(g2d, gameData.camera);
+        }
         for (Chunk chunk : gameData.allChunks) {
             chunk.render(g2d, gameData.camera);
         }

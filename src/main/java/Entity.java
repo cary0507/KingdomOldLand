@@ -106,12 +106,12 @@ public class Entity implements Serializable {
      * */
     public void update() {
         passedFrame++;
-        int maxIndex;
+        int maxIndex;;
         if (isFacingLeft) {
-            animeDuration = (int) (leftImages.length / GamePanel.FPS);
+            animeDuration = (int) (GamePanel.FPS / leftImages.length);
             maxIndex = leftImages.length - 1;
         } else {
-            animeDuration = (int) (rightImages.length / GamePanel.FPS);
+            animeDuration = (int) (GamePanel.FPS / rightImages.length);
             maxIndex = rightImages.length - 1;
         }
         if (passedFrame >= animeDuration) {
@@ -159,6 +159,12 @@ public class Entity implements Serializable {
      * @param g2d the Graphics2D object used for drawing the entity on the screen
      * */
     public void render(Graphics2D g2d, Camera referenceCam) {
+        if (leftImages == null || rightImages == null) {
+            return;
+        }
+        if (leftImages.length == 0 || rightImages.length == 0) {
+            return;
+        }
         BufferedImage img;
         // Check the facing
         if (isFacingLeft) {

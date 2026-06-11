@@ -15,14 +15,8 @@ public class Projectile extends Entity {
      * @param y            the initial y-coordinate of the projectile
      * @param maxSpeed     the maximum speed the projectile can reach
      */
-    public Projectile(int x, int y, double maxSpeed, GamePanel gamePanel) {
+    public Projectile(int x, int y, double maxSpeed, GamePanel gamePanel, ItemData data) {
         super(x, y, maxSpeed, gamePanel);
-    }
-
-    /**
-     * Sets the ItemData
-     * */
-    public void setData(ItemData data) {
         this.data = data;
     }
 
@@ -39,11 +33,11 @@ public class Projectile extends Entity {
     }
 
     /**
-     * Calculate the acceleration vector components based on the facing direction and acceleration magnitude.
+     * Calculate the velocity vector components based on the facing direction and acceleration magnitude.
      * */
-    public void updateAccVectors(double facingDir, double acceleration) {
-        this.accX = Math.cos(facingDir) * acceleration;
-        this.accY = Math.sin(facingDir) * acceleration;
+    public void setVelFromDir(double facingDir, double velocity) {
+        this.velX = Math.cos(facingDir) * velocity;
+        this.velY = Math.sin(facingDir) * velocity;
     }
 
     /**
@@ -81,6 +75,7 @@ public class Projectile extends Entity {
 
     @Override
     public void update() {
+        super.update();
         if (this.y <= GamePanel.HORIZON - this.hitboxHeight) {
             updateVelVectors();
             getDisplacement();

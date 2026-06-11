@@ -38,9 +38,7 @@ public class GameData implements Serializable {
             "/raw images/Coin/Slot/Empty.png",
             "/raw images/Coin/Slot/Filled.png"
     };
-    public static String[] coinImg = {
-            "/raw images/Coin/Thrown/coin1.png"
-    };
+    public static String[] coinImg;
     public static String[] moneyBagImg = {
             "/raw images/Money bag/empty.png",
             "/raw images/Money bag/1~5.png",
@@ -157,6 +155,14 @@ public class GameData implements Serializable {
         allProjectiles = new ArrayList<>();
         allMounts = new ArrayList<>();
 
+        // Set up the animation image files
+        int numCoinFrames = 8;
+        coinImg = new String[numCoinFrames];
+        String coinImgFormat = "/raw images/Coin/Thrown/coin%d.png";
+        for (int i = 1; i <= numCoinFrames; i++) {
+            coinImg[i - 1] = String.format(coinImgFormat, i);
+        }
+
         // Setup camera
         camera = new Camera(gamePanel, 0, 0, 400, 100);
         // Set up the map and player with default mount
@@ -199,7 +205,11 @@ public class GameData implements Serializable {
     }
 
     public Projectile getCoinOnGround(int x) {
-        Projectile coin = new Projectile(x, GamePanel.HORIZON, UNIVERSAL_TOP_SPEED, gamePanel);
+        ItemData coinData = new ItemData(ItemID.COIN, coinImg, true);
+        Projectile coin = new Projectile(x, GamePanel.HORIZON, UNIVERSAL_TOP_SPEED, gamePanel, coinData);
+        coin.setMotionValues(0, 0, 0, 0, 0, false);
+        coin.setImagesFromPaths(coin.data.thrownImgPath, coin.data.thrownImgPath);
+        coin.y -= coin.hitboxHeight;  // Align to ground
         return coin;
     }
 
@@ -280,6 +290,13 @@ public class GameData implements Serializable {
                 // Setup player
                 player = new Player(keyHandler, gamePanel, defaultHorse);
                 player.setImagesFromPaths(playerImgL, playerImgR);
+
+                // Drop 5 coins
+                int midX = curChunkX - curChunk.hitboxWidth / 2;
+                for (int n = 0; n < 5; n++) {
+                    int coinX = midX + 20 * GamePanel.SCALE_PIXEL * n;
+                    allProjectiles.add(getCoinOnGround(coinX));
+                }
 
                 // Create a default wall structure to the left of spawn
                 int leftX = curChunkX - curChunk.hitboxWidth + 10 * GamePanel.SCALE_PIXEL;
