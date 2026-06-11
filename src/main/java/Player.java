@@ -11,7 +11,7 @@ public class Player extends Entity {
      * @param gamePanel the game panel to render the player
      */
     public Player(KeyHandler keyHandler, GamePanel gamePanel, Mountable mount) {
-        super(0, 0, 17, 23, 0, gamePanel);
+        super(0, 0, 0, gamePanel);
         this.keyInput = keyHandler;
         this.gamePanel = gamePanel;
         this.mount = mount;
@@ -19,8 +19,8 @@ public class Player extends Entity {
                 GameData.ItemID.CROWN, 3, -2, 8, -2,
                 GameData.crownImgL, GameData.crownImgR)
         );
-        mount.isMounted = true;
-        mount.anchorsPassenger(this);  // Anchor the player to the mount's position
+        this.mount.passenger = this;    // Sets the player as the passenger
+        this.mount.anchorsPassenger();  // Anchor the player to the mount's position
         moneyBag = new MoneyBag(15, x, y, gamePanel);
     }
 
@@ -31,10 +31,9 @@ public class Player extends Entity {
      * @param newMount the new mount to switch to
      * */
     public void swapMount(Mountable newMount) {
-        mount.isMounted = false;            // Dismount the current mount
-        mount = newMount;                   // Switch to the new mount
-        mount.isMounted = true;             // Mount the new mount
-        newMount.anchorsPassenger(this);    // Update the player's position to follow the new mount
+        newMount.passenger = this;      // Ride on the new mount
+        mount = newMount;               // Switch to the new mount
+        newMount.anchorsPassenger();    // Update the player's position to follow the new mount
     }
 
     /**
@@ -43,9 +42,7 @@ public class Player extends Entity {
      * */
     @Override
     public void update() {
-        if (mount == null) {
-            return;
-        }
+        super.update();
         // Update player's actions based on key inputs while mounted
         if (keyInput.downPressed) {
             Projectile tossedCoin = moneyBag.tossCoin();
@@ -55,19 +52,15 @@ public class Player extends Entity {
             isFacingLeft = true;
             mount.isFacingLeft = true;
             mount.x -= (int) mount.maxSpeed;
-            mount.anchorsPassenger(this);   // Update the player's position to follow the mount
         } else if (keyInput.rightPressed) {
             isFacingLeft = false;
             mount.isFacingLeft = false;
             mount.x += (int) mount.maxSpeed;
-            mount.anchorsPassenger(this);
         }
     }
 
     @Override
     public void render(Graphics2D g2, Camera referenceCam) {
-        referenceCam.focusOn(this);
-        mount.render(g2, referenceCam);
         super.render(g2, referenceCam);
         super.renderItem(g2, referenceCam);
     }

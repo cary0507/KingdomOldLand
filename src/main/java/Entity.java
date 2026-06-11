@@ -14,7 +14,8 @@ public class Entity implements Serializable {
     public boolean isFacingLeft;    // Since it's a 2D game and there's only left and right
                                     // This value only affects which image to use, not the actual movement direction
     public int imgIndex;            // Determines which image to use for animation
-    private long animeDuration;     // How long before switching to the next animation of image in nanoseconds
+    public int animeDuration;       // How many frames before switching to the next animation of image
+    public int passedFrame;         // Frame passed
     public BufferedImage[] leftImages;
     public BufferedImage[] rightImages;
     // Environment
@@ -24,18 +25,15 @@ public class Entity implements Serializable {
      * Initializes the entity with its position, hitbox dimensions, and movement parameters.
      * @param x the initial x-coordinate of the entity
      * @param y the initial y-coordinate of the entity
-     * @param rawHitboxWidth the width in tiles of the entity's image
-     * @param rawHitboxHeight the height in tiles of the entity's image
      * @param maxSpeed the maximum speed the entity can reach
      * */
-    public Entity(int x, int y, int rawHitboxWidth, int rawHitboxHeight, double maxSpeed, GamePanel gamePanel) {
+    public Entity(int x, int y, double maxSpeed, GamePanel gamePanel) {
         this.gamePanel = gamePanel;
         this.x = x;
         this.y = y;
-        this.hitboxWidth = rawHitboxWidth * GamePanel.SCALE_PIXEL;  // Scale up the image
-        this.hitboxHeight = rawHitboxHeight * GamePanel.SCALE_PIXEL;
         this.maxSpeed = maxSpeed;
         imgIndex = 0;
+        passedFrame = 0;
     }
 
     /**
@@ -48,6 +46,18 @@ public class Entity implements Serializable {
     public void setImagesFromPaths(String[] leftImagePaths, String[] rightImagePaths) {
         leftImages = GameData.pathsToImages(leftImagePaths);
         rightImages = GameData.pathsToImages(rightImagePaths);
+        // set hitbox size from the first available image
+        BufferedImage baseImg = null;
+        if (leftImages != null && leftImages.length > 0) {
+            baseImg = leftImages[0];
+        } else if (rightImages != null && rightImages.length > 0) {
+            baseImg = rightImages[0];
+        }
+        if (baseImg != null) {
+            // Get the dimensions
+            this.hitboxWidth = baseImg.getWidth() * GamePanel.SCALE_PIXEL;
+            this.hitboxHeight = baseImg.getHeight() * GamePanel.SCALE_PIXEL;
+        }
         // ensure imgIndex is valid
         if (imgIndex < 0) {
             imgIndex = 0;
@@ -69,13 +79,24 @@ public class Entity implements Serializable {
     public void setImages(BufferedImage[] leftImages, BufferedImage[] rightImages) {
         this.leftImages = leftImages;
         this.rightImages = rightImages;
+        // set hitbox size from the first available image
+        BufferedImage baseImg = null;
+        if (this.leftImages != null && this.leftImages.length > 0) {
+            baseImg = this.leftImages[0];
+        } else if (this.rightImages != null && this.rightImages.length > 0) {
+            baseImg = this.rightImages[0];
+        }
+        if (baseImg != null) {
+            this.hitboxWidth = baseImg.getWidth() * GamePanel.SCALE_PIXEL;
+            this.hitboxHeight = baseImg.getHeight() * GamePanel.SCALE_PIXEL;
+        }
     }
 
     /**
      * Returns a duplicate of the entity with the same position, hitbox dimensions, movement parameters, and images.
      * */
     public Entity duplicate() {
-        Entity duplicate = new Entity(x, y, hitboxWidth, hitboxHeight, maxSpeed, gamePanel);
+        Entity duplicate = new Entity(x, y, maxSpeed, gamePanel);
         duplicate.setImages(leftImages, rightImages);
         return duplicate;
     }
@@ -84,12 +105,22 @@ public class Entity implements Serializable {
      * Updates the in-game behavior (Movement, animation, etc.) of the entity.
      * */
     public void update() {
-        if (isFacingLeft && imgIndex < leftImages.length - 1) {
-            imgIndex++;
-        } else if (!isFacingLeft && imgIndex < rightImages.length - 1) {
-            imgIndex++;
+        passedFrame++;
+        int maxIndex;
+        System.out.println(passedFrame + " " + animeDuration);
+        if (isFacingLeft) {
+            animeDuration = (int) (leftImages.length / GamePanel.FPS);
+            maxIndex = leftImages.length - 1;
         } else {
-            imgIndex = 0;
+            animeDuration = (int) (rightImages.length / GamePanel.FPS);
+            maxIndex = rightImages.length - 1;
+        }
+        if (passedFrame >= animeDuration) {
+            passedFrame = 0;
+            imgIndex++;
+            if (imgIndex >= maxIndex) {
+                imgIndex = 0;
+            }
         }
     }
 

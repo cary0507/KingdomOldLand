@@ -7,20 +7,18 @@ public class Enemy extends Entity {
     /**
      * Initializes the entity with its position, hitbox dimensions, and movement parameters.
      *
-     * @param x            the initial x-coordinate of the entity
-     * @param y            the initial y-coordinate of the entity
-     * @param rawHitboxWidth  the width in tiles of the entity's hitbox
-     * @param rawHitboxHeight the height in tiles of the entity's hitbox
-     * @param maxSpeed     the maximum speed the entity can reach
-     * @param gamePanel
+     * @param x the initial x-coordinate of the entity
+     * @param y the initial y-coordinate of the entity
+     * @param maxSpeed the maximum speed the entity can reach
+     * @param gamePanel the main screen
      *
      */
-    public Enemy(int x, int y, int rawHitboxWidth, int rawHitboxHeight, double maxSpeed, GamePanel gamePanel) {
-        super(x, y, rawHitboxWidth, rawHitboxHeight, maxSpeed, gamePanel);
+    public Enemy(int x, int y, double maxSpeed, GamePanel gamePanel) {
+        super(x, y, maxSpeed, gamePanel);
     }
 
     /**
-     * Uses a seperate method to set the base stats of the enemy, allowing for more flexible enemy creation
+     * Uses a separate method to set the base stats of the enemy, allowing for more flexible enemy creation
      *
      * @param hp the health points of the enemy
      * @param damage the damage the enemy can inflict on the player

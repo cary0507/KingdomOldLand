@@ -13,12 +13,10 @@ public class Projectile extends Entity {
      *
      * @param x            the initial x-coordinate of the projectile
      * @param y            the initial y-coordinate of the projectile
-     * @param rawHitboxWidth  the width in tiles of the projectile's hitbox
-     * @param rawHitboxHeight the height in tiles of the projectile's hitbox
      * @param maxSpeed     the maximum speed the projectile can reach
      */
-    public Projectile(int x, int y, int rawHitboxWidth, int rawHitboxHeight, double maxSpeed, GamePanel gamePanel) {
-        super(x, y, rawHitboxWidth, rawHitboxHeight, maxSpeed, gamePanel);
+    public Projectile(int x, int y, double maxSpeed, GamePanel gamePanel) {
+        super(x, y, maxSpeed, gamePanel);
     }
 
     /**
@@ -57,6 +55,7 @@ public class Projectile extends Entity {
         double facingDir = Math.atan2(velY, velX);  // Gets facing direction from the current velocity vector
         double velMagnitude = Math.sqrt(newVelX * newVelX + newVelY * newVelY);
         if (velMagnitude > this.maxSpeed) {  // Check for speed limit
+            // Break into components
             double maxVelX = Math.cos(facingDir) * this.maxSpeed;
             double maxVelY = Math.sin(facingDir) * this.maxSpeed;
             this.velX = maxVelX;

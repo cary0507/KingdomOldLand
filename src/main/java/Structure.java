@@ -9,15 +9,12 @@ public class Structure extends Entity {
      *
      * @param x the x-coordinate of the structure
      * @param y the y-coordinate of the structure
-     * @param rawHitboxWidth the width in tiles of the structure
-     * @param rawHitboxHeight the height in tiles of the structure
      * @param maxHP the maximum hit points of the structure
      * @param id the id of the object
      * @param gamePanel the screen that the object appear on
      */
-    public Structure(int x, int y, int rawHitboxWidth, int rawHitboxHeight, int maxHP, GameData.StructureID id,
-                     GamePanel gamePanel) {
-        super(x, y, rawHitboxWidth, rawHitboxHeight, 0, gamePanel);
+    public Structure(int x, int y, int maxHP, GameData.StructureID id, GamePanel gamePanel) {
+        super(x, y, 0, gamePanel);
         this.gamePanel = gamePanel;
         this.maxHP = maxHP;
         this.curHP = maxHP;
@@ -37,9 +34,7 @@ public class Structure extends Entity {
      * */
     public Projectile rewardCoin() {
         int centerX = (int) (x + hitboxWidth / 2);
-        Projectile coin = new Projectile(
-                centerX, y, 20, 20, 6, gamePanel
-        );
+        Projectile coin = new Projectile(centerX, y, 6, gamePanel);
         return coin;
     }
 }

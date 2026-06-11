@@ -1,5 +1,4 @@
 public class Mountable extends Entity {
-    public boolean isMounted;  // Whether the mount is being ridden or free
     public final int MAX_STAMINA;
     public int stamina;
     public double curSpeed;
@@ -10,21 +9,19 @@ public class Mountable extends Entity {
     // Offset values when not facing left (Facing right)
     private int passengerXOffsetR;
     private int passengerYOffsetR;
+    // Sets the passenger
+    public Entity passenger;
 
     /**
      * Initializes the mountable entity with its position, hitbox dimensions, movement parameters, and stamina.
      *
      * @param x the initial x-coordinate of the mountable entity
      * @param y the initial y-coordinate of the mountable entity
-     * @param rawHitboxWidth the width in tiles of the mountable entity's hitbox
-     * @param rawHitboxHeight the height in tiles of the mountable entity's hitbox
      * @param maxSpeed the maximum speed the mountable entity can reach
      * @param maxStamina the maximum stamina of the mountable entity, determines the speed of the mount
      * */
-    public Mountable(int x, int y, int rawHitboxWidth, int rawHitboxHeight, double maxSpeed, int maxStamina,
-                     GamePanel gamePanel) {
-        super(x, y, rawHitboxWidth, rawHitboxHeight, maxSpeed, gamePanel);
-        this.isMounted = false;
+    public Mountable(int x, int y, double maxSpeed, int maxStamina, GamePanel gamePanel) {
+        super(x, y, maxSpeed, gamePanel);
         this.MAX_STAMINA = maxStamina;
         this.stamina = maxStamina;
         this.isFrightened = false;
@@ -49,15 +46,25 @@ public class Mountable extends Entity {
     /**
      * Anchors the passenger to the mount, positioning them relative to the mount's origin based on its facing direction
      *
-     * @param passenger the passenger entity to anchor
      */
-    public void anchorsPassenger(Entity passenger) {
+    public void anchorsPassenger() {
+        if (passenger == null) {
+            return;
+        }
         if (isFacingLeft) {
             passenger.x = x + passengerXOffsetL;
             passenger.y = y - passengerYOffsetL;
         } else {
             passenger.x = x + passengerXOffsetR;
             passenger.y = y - passengerYOffsetR;
+        }
+    }
+
+    @Override
+    public void update() {
+        super.update();
+        if (passenger != null) {
+            anchorsPassenger();
         }
     }
 }

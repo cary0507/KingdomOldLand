@@ -1,6 +1,6 @@
 public class UpgradableStruct extends ContainerStruct {
     public int level;
-    public final String[][] LEVEL_IMG_PATH;
+    public String[][] levelImgPath;
     public int priceLvlUp;
 
     /**
@@ -8,15 +8,13 @@ public class UpgradableStruct extends ContainerStruct {
      *
      * @param x            initial x position in the world
      * @param y            initial y position in the world
-     * @param levelImgPath array of image path strings for each upgrade level
      * @param id           identifier for the GameData entity type
      * @param relativePos  relative inventory/slot positions (passed to parent)
      * @param gamePanel    reference to the GamePanel the structure belongs to
      */
-    public UpgradableStruct(int x, int y, String[][] levelImgPath, GameData.StructureID id, int[][] relativePos,
+    public UpgradableStruct(int x, int y, GameData.StructureID id, int[][] relativePos,
                             GamePanel gamePanel) {
-        super(x, y, 0, 0, 0, id, relativePos, gamePanel);
-        LEVEL_IMG_PATH = levelImgPath;
+        super(x, y, 0, id, relativePos, gamePanel);
         level = 0;
         priceLvlUp = 1;
     }
@@ -28,7 +26,7 @@ public class UpgradableStruct extends ContainerStruct {
      * @param newHeight new height to apply after leveling up
      */
     public void levelUp(int newWidth, int newHeight) {
-        if (this.level >= LEVEL_IMG_PATH.length) {
+        if (this.level >= levelImgPath.length) {
             return;
         }
         level++;

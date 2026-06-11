@@ -5,9 +5,9 @@ public class ContainerStruct extends Structure {
     /**
      * Initializes the structure with its position, hitbox dimensions, health points, and the entities it contains.
      * */
-    public ContainerStruct(int x, int y, int width, int height, int maxHP, GameData.StructureID id, int[][] relativePos,
+    public ContainerStruct(int x, int y, int maxHP, GameData.StructureID id, int[][] relativePos,
                            GamePanel gamePanel) {
-        super(x, y, width, height, maxHP, id, gamePanel);
+        super(x, y, maxHP, id, gamePanel);
         this.relativePos = relativePos;
         this.containing = new Entity[relativePos.length];
     }
@@ -15,12 +15,20 @@ public class ContainerStruct extends Structure {
     /**
      * Anchors the contained ordered entities to the structure by updating their positions based on the structure's
      * current position and their relative positions.
+     *
+     * Precondition: if containing should have the same dimensions of relativePos
+     *               However they can be empty
+     * Postcondition: anchors the entities to the respective coordinates, or do nothing
      * */
     public void anchorEntities() {
+        if (containing == null || relativePos == null) {
+            return;
+        }
+        int x = 0, y = 1;  // Too lazy to create a Coordinate class
         for (int i = 0; i < containing.length; i++) {
             if (containing[i] != null) {
-                containing[i].x = this.x + relativePos[i][0];
-                containing[i].y = this.y + relativePos[i][1];
+                containing[i].x = this.x + relativePos[i][x];
+                containing[i].y = this.y + relativePos[i][y];
             }
         }
     }

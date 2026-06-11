@@ -1,8 +1,8 @@
 public class Human extends Entity {
     public GameData.JobID id;
     public Structure habitat;
-    public int numCoins;
-    public int maxCoins;
+    public final int MAX_HP = 2;
+    public int hp;
     public PickedItem equipping;
 
     /**
@@ -11,16 +11,13 @@ public class Human extends Entity {
      *
      * @param x            the initial x-coordinate of the entity
      * @param y            the initial y-coordinate of the entity
-     * @param rawHitboxWidth  the width in tiles of the entity's hitbox
-     * @param rawHitboxHeight the height in tiles of the entity's hitbox
      * @param maxSpeed     the maximum speed the entity can reach
      */
-    public Human(int x, int y, int rawHitboxWidth, int rawHitboxHeight, double maxSpeed, Structure habitat,
+    public Human(int x, int y, double maxSpeed, Structure habitat,
                  GamePanel gamePanel) {
-        super(x, y, rawHitboxWidth, rawHitboxHeight, maxSpeed, gamePanel);
+        super(x, y, maxSpeed, gamePanel);
         this.id = GameData.JobID.FUGITIVE;
         this.habitat = habitat;
+        hp = 1;
     }
-
-
 }

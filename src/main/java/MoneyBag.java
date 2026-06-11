@@ -50,18 +50,13 @@ public class MoneyBag implements Serializable {
     public Projectile tossCoin() {
         if (!coins.isEmpty()) {
             PickedItem selectCoin = coins.remove(coins.size() - 1);
-            // Determines the dimensions of the projectile from the image
-            BufferedImage[] img = GameData.pathsToImages(selectCoin.data.thrownImgPath);
-            Projectile tossedCoin = selectCoin.toss(
-                    dropX, dropY, img[0].getWidth(), img[0].getHeight(),
-                    GameData.UNIVERSAL_TOP_SPEED, gamePanel
+            // Convert into a projectile
+            Projectile tossedCoin = selectCoin.toss(dropX, dropY, GameData.UNIVERSAL_TOP_SPEED, gamePanel);
+            tossedCoin.setMotionValues(
+                    0, -5,   // Throws the coin upwards
+                    0, GameData.GRAVITY,
+                    0, false
             );
-            tossedCoin.x = dropX;
-            tossedCoin.y = dropY;
-            tossedCoin.velX = 0;
-            tossedCoin.velY = -5;                   // Toss the coin upwards
-            tossedCoin.accX = 0;
-            tossedCoin.accY = GameData.GRAVITY;     // Apply gravity to the tossed
             return tossedCoin;
         }
         return null;  // No coins to toss

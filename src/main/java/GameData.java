@@ -40,7 +40,14 @@ public class GameData implements Serializable {
             "/raw images/Coin/Thrown/coin1.png"
     };
     public static String[] wallImgL = {
-
+            "/raw images/Wall/lvl0/Wall lvl 0 L.png",
+            "/raw images/Wall/lvl1/Wall lvl 1 L.png",
+            "/raw images/Wall/lvl2/Wall lvl 2 L.png"
+    };
+    public static String[] wallImgR = {
+            "/raw images/Wall/lvl0/Wall lvl 0 R.png",
+            "/raw images/Wall/lvl1/Wall lvl 1 R.png",
+            "/raw images/Wall/lvl2/Wall lvl 2 R.png"
     };
     // Object IDs
     public enum ItemID {
@@ -76,6 +83,7 @@ public class GameData implements Serializable {
     }
     // Game objects
     public GamePanel gamePanel;
+    public KeyHandler keyHandler;
     public Camera camera;
     public Player player;
     public ArrayList<PickedItem> allPickedItems;
@@ -106,21 +114,49 @@ public class GameData implements Serializable {
         // Set up the map and player with default mount
         int[] map = getLandCode(2, 2);
         initLand(map);
-        // Setup player
-        player = new Player(keyHandler, gamePanel, allMounts.get(0));
-        player.setImagesFromPaths(playerImgL, playerImgR);
     }
 
-    public void setUpHorse(int spawnX) {
+    /**
+     * Set up the default horse and add it to the mountable ArrayList
+     * */
+    public Mountable getHorse(int spawnX, double maxSpeed) {
         // Setup default horse
-        Mountable originHorse = new Mountable(
+        Mountable mount = new Mountable(
                 spawnX,
-                GamePanel.HORIZON, 43, 29, 5.0, 100, gamePanel
+                GamePanel.HORIZON,
+                maxSpeed,
+                100,
+                gamePanel
         );
-        originHorse.y -= originHorse.hitboxHeight;
-        originHorse.setImagesFromPaths(brownHorseImgL, brownHorseImgR);
-        originHorse.setPassengerOffset(14, 7, 12, 7);
-        allMounts.add(originHorse);
+        mount.setImagesFromPaths(brownHorseImgL, brownHorseImgR);
+        // adjust y after hitbox height is known
+        mount.y -= mount.hitboxHeight;
+        mount.setPassengerOffset(14, 7, 12, 7);
+        return mount;
+    }
+
+    /**
+     * Create a wall to the left of the spawn chunk
+     * */
+    public void setLeftWall(int alignLeftX) {
+        Structure wallLeft = new Structure(
+                alignLeftX, GamePanel.HORIZON, 10, GameData.StructureID.WALL, gamePanel
+        );
+        wallLeft.isFacingLeft = true;  // Facing left
+        wallLeft.setImagesFromPaths(wallImgL, wallImgR);
+        wallLeft.y -= wallLeft.hitboxHeight;  // Align bottom
+        allStructures.add(wallLeft);  // Add object to game
+    }
+
+    public void setRightWall(int alignRightX) {
+        Structure wallRight = new Structure(
+                alignRightX, GamePanel.HORIZON, 10, GameData.StructureID.WALL, gamePanel
+        );
+        wallRight.isFacingLeft = false;  // Facing right
+        wallRight.setImagesFromPaths(wallImgL, wallImgR);
+        wallRight.x -= wallRight.hitboxWidth;   // Align right
+        wallRight.y -= wallRight.hitboxHeight;  // Align bottom
+        allStructures.add(wallRight);  // Add object to game
     }
 
     /**
@@ -147,10 +183,11 @@ public class GameData implements Serializable {
     }
 
     /**
-     * Generates structures based on land code
+     * Initialize map based on land code
      * */
     public void initLand(int[] landCode) {
         int curChunkX = 0;  // Acts like a cursor
+
         for (int code : landCode) {
             // Set up the background chunk
             ChunkID chunkID = ChunkID.values()[code];
@@ -162,8 +199,23 @@ public class GameData implements Serializable {
             allChunks.add(curChunk);  // Adds chunk to the game
             // Parse different codes
             if (code == 0) {  // Spawn chunk is guaranteed to have specific structures
+                // Gets the spawn location for player's mount
                 int spawnX = (int) (curChunkX - 2 * curChunk.hitboxWidth / 3);
-                setUpHorse(spawnX);
+                Mountable defaultHorse = getHorse(spawnX, UNIVERSAL_TOP_SPEED);
+                allMounts.add(defaultHorse);  // Add to game
+                // Setup player
+                player = new Player(keyHandler, gamePanel, defaultHorse);
+                player.setImagesFromPaths(playerImgL, playerImgR);
+
+                // Create a default wall structure to the left of spawn
+                int leftX = curChunkX - curChunk.hitboxWidth + 10 * GamePanel.SCALE_PIXEL;
+                setLeftWall(leftX);
+
+
+
+                // Create the default wall to the right of the spawn
+                int rightX = curChunkX - 10 * GamePanel.SCALE_PIXEL;
+                setRightWall(rightX);
             }
         }
     }
@@ -267,13 +319,9 @@ public class GameData implements Serializable {
         int imageCount = 0;
         for (String path : paths) {
             if (path != null) {
-                try {
-                    BufferedImage img = ImageIO.read(GameData.class.getResourceAsStream(path));
-                    if (img != null) {
-                        imageCount++;
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
+                BufferedImage img = pathToImage(path);
+                if (img != null) {
+                    imageCount++;
                 }
             }
         }
@@ -284,6 +332,7 @@ public class GameData implements Serializable {
         for (String path : paths) {
             if (path != null) {
                 images[index] = pathToImage(path);
+                index++;
             }
         }
         return images;
