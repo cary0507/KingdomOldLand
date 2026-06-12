@@ -12,6 +12,7 @@ public class ItemData implements Serializable {
     public boolean canPickUp;
     public int maxPickDelay;  // Delay until the item can be pick up in frames
     public int curPickFrame;
+    public Entity owner;
 
     /**
      * Constructor for PickedItem

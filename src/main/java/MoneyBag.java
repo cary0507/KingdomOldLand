@@ -35,17 +35,19 @@ public class MoneyBag implements Serializable {
      *
      * @param coin the coin to be added
      * */
-    public void addCoin(Projectile coin) {
+    public void addCoin(Projectile coin, Entity owner) {
         Random randGen = new Random();
         final int DROP_CHANCE = 2;  // 1/2 = 50% chance
 
         if (coin.data.getId() == GameData.ItemID.COIN) {
-            coins.add(coin.getPicked(coin.data));
+            PickedItem pickedCoin = coin.getPicked(coin.data);
+            pickedCoin.data.owner = owner;  // Change owner
+            coins.add(pickedCoin);
             // Check when hits max capacity
             if (coins.size() > capacity) {
                 int chance = randGen.nextInt(DROP_CHANCE - 1 + 1) + 1;  // nextInt(high - low + 1) + low
                 if (chance == 1) {
-                    Projectile droppedCoin = tossCoin();
+                    Projectile droppedCoin = tossCoin(owner);
                     droppedCoin.isOutOfBound = true;
                 }
             }
@@ -58,11 +60,12 @@ public class MoneyBag implements Serializable {
      *
      * @return the coin that is removed
      * */
-    public Projectile tossCoin() {
+    public Projectile tossCoin(Entity owner) {
         if (!coins.isEmpty()) {
             PickedItem selectCoin = coins.remove(coins.size() - 1);
             // Convert into a projectile
             Projectile tossedCoin = selectCoin.toss(dropX, dropY, 20, gamePanel);
+            tossedCoin.data.owner = owner;
             tossedCoin.setImagesFromPaths(tossedCoin.data.thrownImgPath, tossedCoin.data.thrownImgPath);
             tossedCoin.setMotionValues(
                     0, -3 * GamePanel.SCALE_PIXEL,   // Throws the coin upwards
@@ -73,6 +76,13 @@ public class MoneyBag implements Serializable {
             return tossedCoin;
         }
         return null;  // No coins to toss
+    }
+
+    /**
+     * Completely eliminate a coin
+     * */
+    public void exhaustCoin() {
+        coins.remove(coins.size() - 1);
     }
 
     /**

@@ -1,5 +1,6 @@
 public class UpgradableStruct extends ContainerStruct {
     public int level;
+    public int maxLevel;
 
     /**
      * Creates a new UpgradableStruct.
@@ -13,24 +14,22 @@ public class UpgradableStruct extends ContainerStruct {
     public UpgradableStruct(int x, int y, GameData.StructureID id, int[][] relativePos, GamePanel gamePanel) {
         super(x, y, 0, id, relativePos, gamePanel);
         level = 0;
+        maxLevel = 0;
     }
 
     /**
      * Level up this structure to the next available level.
      * This time, instead of storing animations, left/rightImages store image of each level
-     *
-     * @param newWidth  new width to apply after leveling up
-     * @param newHeight new height to apply after leveling up
      */
-    public void levelUp(int newWidth, int newHeight) {
+    public void levelUp(int newHP) {
         if (this.level >= leftImages.length || this.level >= rightImages.length) {
             return;
         }
         level++;
-        maxHP = 5 + 5 * (this.level - 1);
+        maxHP = newHP;
         curHP = this.maxHP;
-        hitboxWidth = newWidth;
-        hitboxHeight = newHeight;
+        this.hitboxWidth = leftImages[level].getWidth() * GamePanel.SCALE_PIXEL;
+        this.hitboxHeight = leftImages[level].getHeight() * GamePanel.SCALE_PIXEL;
     }
 
     /**
@@ -39,5 +38,6 @@ public class UpgradableStruct extends ContainerStruct {
     @Override
     public void update() {
         imgIndex = level;
+        maxLevel = leftImages.length - 1;
     }
 }

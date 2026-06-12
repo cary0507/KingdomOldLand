@@ -54,7 +54,8 @@ public class Human extends Entity {
         switch(id) {
             case FUGITIVE:
                 moneyBag.capacity = 1;
-                if (moneyBag.numCoins >= moneyBag.capacity) {
+                if (moneyBag.numCoins >= moneyBag.capacity) {  // Get hired and exhaust a coin
+                    this.moneyBag.exhaustCoin();
                     this.id = GameData.JobID.VILLAGER;
                 }
                 break;
@@ -69,6 +70,7 @@ public class Human extends Entity {
                 moneyBag.capacity = 11;
                 break;
         }
+        // Day & night activities
         if (isNight) {
             goHme();  // Head back to habitat during night time
         } else {

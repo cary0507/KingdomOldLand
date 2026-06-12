@@ -45,7 +45,7 @@ public class Player extends Entity {
         super.update();
         // Update player's actions based on key inputs while mounted
         if (keyInput.downPressedOnce) {
-            Projectile tossedCoin = moneyBag.tossCoin();
+            Projectile tossedCoin = moneyBag.tossCoin(this);
             if (tossedCoin != null) {
                 gamePanel.gameData.allProjectiles.add(tossedCoin);
             }

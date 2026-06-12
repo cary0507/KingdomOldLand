@@ -96,17 +96,33 @@ public class GamePanel extends JPanel implements Runnable {
             // Check if this projectile is a coin
             if (Objects.requireNonNull(projectile.data.getId()) == GameData.ItemID.COIN) {
                 // The player will pick up the coin if they collide and the coin is not in pickup delay
-                if (GameData.isInside(projectile, gameData.player.mount) &&
-                        projectile.data.curPickFrame >= projectile.data.maxPickDelay) {  // Prevents instant pick
-                    gameData.player.moneyBag.addCoin(projectile);
+                if (GameData.isInside(projectile, gameData.player.mount)
+                        && projectile.data.curPickFrame >= projectile.data.maxPickDelay) {  // Prevents instant pick
+
+                    gameData.player.moneyBag.addCoin(projectile, gameData.player);
                     gameData.allProjectiles.remove(projectile);
                 }
                 // Humans can pick up coin only if they have space for their money bag
                 for (Human human : gameData.allHumans) {
-                    if (GameData.isInside(human, projectile) &&
-                            human.moneyBag.capacity > human.moneyBag.numCoins) {
-                        human.moneyBag.addCoin(projectile);
+                    if (GameData.isInside(human, projectile)
+                            && human.moneyBag.capacity > human.moneyBag.numCoins
+                            && projectile.data.curPickFrame >= projectile.data.maxPickDelay) {
+
+                        human.moneyBag.addCoin(projectile, human);
                         gameData.allProjectiles.remove(projectile);
+                        break;
+                    }
+                }
+                // When the coin interacts with a tradable structure
+                for (UpgradableStruct upgradeStruct : gameData.allUpgradable) {
+                    if (GameData.isInside(upgradeStruct, projectile)
+                            // Check if the object can further level up
+                            && upgradeStruct.level < upgradeStruct.leftImages.length) {
+
+                        // Calculate new hp
+                        int newHP = upgradeStruct.maxHP + 5 + 2 * upgradeStruct.level;
+                        upgradeStruct.levelUp(newHP);
+                        gameData.allUpgradable.remove(upgradeStruct);
                         break;
                     }
                 }
@@ -208,43 +224,55 @@ public class GamePanel extends JPanel implements Runnable {
             Color moonColor = new Color(133, 147, 154);
             gameData.moon.render(g2d, 35 * SCALE_PIXEL, 35 * SCALE_PIXEL, moonColor);
         }
+
         // Draw river front
         Color riverColor = new Color(93, 112, 106);
         g2d.setColor(riverColor);
         g2d.fillRect(0, HORIZON + 120, GamePanel.PANEL_WIDTH, 50);
+
         // Renders all structures
         for (ContainerStruct container : gameData.allContainers) {
             container.render(g2d, gameData.camera);
-            if (GameData.isInside(container, gameData.player.mount) &&
-                    container.numItems < container.containing.length) {
+            if (GameData.isInside(container, gameData.player.mount)
+                    // If shelf is not full
+                    && container.numItems < container.containing.length) {
+
                 container.renderHint(g2d, gameData.camera);
             }
         }
         for (UpgradableStruct upgradeStruct : gameData.allUpgradable) {
             upgradeStruct.render(g2d, gameData.camera);
-            if (GameData.isInside(upgradeStruct, gameData.player.mount) &&
-                    upgradeStruct.level < upgradeStruct.leftImages.length) {
+            if (GameData.isInside(upgradeStruct, gameData.player.mount)
+                    // If not at max level
+                    && upgradeStruct.level < upgradeStruct.maxLevel) {
+
                 upgradeStruct.renderHint(g2d, gameData.camera);
             }
         }
+
         // Renders all NPC
         for (Human human : gameData.allHumans) {
             human.render(g2d, gameData.camera);
         }
+
         // Render all enemies
         for (Enemy enemy: gameData.allEnemies) {
             enemy.render(g2d, gameData.camera);
         }
+
         // Render all mounts
         for (Mountable mount : gameData.allMounts) {
             mount.render(g2d, gameData.camera);
         }
+
         // Render the player
         gameData.player.render(g2d, gameData.camera);
+
         // Render the projectiles
         for (Projectile projectile : gameData.allProjectiles) {
             projectile.render(g2d, gameData.camera);
         }
+
         // Render second layer of river
         g2d.setColor(riverColor);
         g2d.fillRect(0, HORIZON + 170, GamePanel.PANEL_WIDTH, 140);
@@ -252,6 +280,7 @@ public class GamePanel extends JPanel implements Runnable {
         for (Chunk chunk : gameData.allChunks) {
             chunk.render(g2d, gameData.camera);
         }
+
         // Render all portals
         for (int i = 0; i < gameData.allPortals.size(); i++) {
             Portal portal = gameData.allPortals.get(i);
