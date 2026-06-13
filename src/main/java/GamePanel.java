@@ -326,6 +326,74 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     /**
+     * Updates all humans
+     * */
+    public void updateHumans(boolean isNight) {
+        for (int i = 0; i < gameData.allHumans.size(); i++) {
+            Human human = gameData.allHumans.get(i);
+            // Becomes homeless again if hp <= 0
+            if (human.hp <= 0) {
+                human.id = GameData.JobID.FUGITIVE;
+                human.hp = 1;
+            }
+            // Set the habitate
+            if (human.habitat == null) {
+                switch (human.id) {
+                    case FUGITIVE:
+                    case VILLAGER:
+                    case FARMER:   // Fall through
+                        human.habitat = gameData.townCenter;  // They all live in town center
+                        break;
+                    case ARCHER:
+                        if (getRandomWall() == null) {
+                            human.habitat = gameData.townCenter;
+                        } else {
+                            human.habitat = getRandomWall();
+                        }
+                }
+            }
+            human.update(isNight);
+            // Toss coins if player is near
+            if (human.moneyBag.numCoins > 0 && GameData.isInside(human, gameData.player)) {
+                Projectile coin = human.moneyBag.tossCoin("NPC");
+                if (coin != null) {
+                    gameData.allProjectiles.add(coin);
+                }
+            }
+            // Attempt to attack enemy
+            if (human.id == GameData.JobID.ARCHER) {
+                for (Enemy enemy : gameData.allEnemies) {
+                    if (GameData.getDist(enemy, human) <= 400 * SCALE_PIXEL
+                            && human.curShootCD <= 0) {
+
+                        Projectile arrow = human.shoot(enemy);
+                        if (arrow != null) {
+                            gameData.allProjectiles.add(arrow);
+                            human.curShootCD = human.shootCD;
+                        }
+                    }
+                }
+            }
+            // Farmer is the player's main income
+            else if (human.id == GameData.JobID.FARMER
+                    && human.moneyBag.numCoins < human.moneyBag.capacity
+                    && gameData.framePassed == 0) {
+                // Every day generate 1 coin
+                ItemData coinData = new ItemData(
+                        GameData.ItemID.COIN, GameData.coinImg, GameData.coinImg, true
+                );
+                human.moneyBag.addCoin(
+                        new Projectile(0, 0, 20, this, coinData), "NPC"
+                );
+            }
+            else if (human.id == GameData.JobID.FUGITIVE
+                    && GameData.getDist(human, human.habitat) >= 100 * SCALE_PIXEL) {
+                human.goToDestination();
+            }
+        }
+    }
+
+    /**
      * Update all enemies
      * */
     public void updateEnemies() {
@@ -402,20 +470,21 @@ public class GamePanel extends JPanel implements Runnable {
      * */
     public void update() {
         Random rand = new Random();
+
         // Determines the stage of the day
         boolean isNight;
+
         // Updates background
         gameData.changeSkyColor(MAX_BLUE, MIN_BLUE, RED_DIFF, GREEN_DIFF);  // Sky
         if (gameData.framePassed == 0) {  // At day
             int bound = gameData.allPortals.size();
             int choice = rand.nextInt(bound);
+            // Spawn new NPC
             gameData.allHumans.addAll(gameData.allPortals.get(choice).generateNPC(gameData.townCenter));
             isNight = false;
         } else if (gameData.framePassed < gameData.NIGHT_FRANE) {  // Noon
             // Sun's orbit
             gameData.sun.update(gameData.framePassed);
-            // Spawn new NPC
-
             isNight = false;
         } else if (gameData.framePassed == gameData.NIGHT_FRANE) {  // At Night
             // Choose a random portal to spawn enemy
@@ -443,71 +512,8 @@ public class GamePanel extends JPanel implements Runnable {
 
         updateProjectiles();
 
-        // Update each human
-        for (int i = 0; i < gameData.allHumans.size(); i++) {
-            Human human = gameData.allHumans.get(i);
-            // Becomes homeless again if hp <= 0
-            if (human.hp <= 0) {
-                human.id = GameData.JobID.FUGITIVE;
-                human.hp = 1;
-            }
-            // Set the habitate
-            if (human.habitat == null) {
-                switch (human.id) {
-                    case FUGITIVE:
-                    case VILLAGER:
-                    case FARMER:   // Fall through
-                        human.habitat = gameData.townCenter;  // They all live in town center
-                        break;
-                    case ARCHER:
-                        if (getRandomWall() == null) {
-                            human.habitat = gameData.townCenter;
-                        } else {
-                            human.habitat = getRandomWall();
-                        }
-                }
-            }
-            human.update(isNight);
-            // Toss coins if player is near
-            if (human.moneyBag.numCoins > 0 && GameData.isInside(human, gameData.player)) {
-                Projectile coin = human.moneyBag.tossCoin("NPC");
-                if (coin != null) {
-                    gameData.allProjectiles.add(coin);
-                }
-            }
-            // Attempt to attack enemy
-            if (human.id == GameData.JobID.ARCHER) {
-                for (Enemy enemy : gameData.allEnemies) {
-                    if (GameData.getDist(enemy, human) <= 400 * SCALE_PIXEL
-                            && human.curShootCD <= 0) {
+        updateHumans(isNight);
 
-                        Projectile arrow = human.shoot(enemy);
-                        if (arrow != null) {
-                            gameData.allProjectiles.add(arrow);
-                            human.curShootCD = human.shootCD;
-                        }
-                    }
-                }
-            }
-            // Farmer is the player's main income
-            else if (human.id == GameData.JobID.FARMER
-                    && human.moneyBag.numCoins < human.moneyBag.capacity
-                    && gameData.framePassed == 0) {
-                // Every day generate 1 coin
-                ItemData coinData = new ItemData(
-                        GameData.ItemID.COIN, GameData.coinImg, GameData.coinImg, true
-                );
-                human.moneyBag.addCoin(
-                        new Projectile(0, 0, 20, this, coinData), "NPC"
-                );
-            }
-            else if (human.id == GameData.JobID.FUGITIVE
-                    && GameData.getDist(human, human.habitat) >= 100 * SCALE_PIXEL) {
-                human.goToDestination();
-            }
-        }
-
-        // Update each enemy
         updateEnemies();
 
         // Update each chunk
