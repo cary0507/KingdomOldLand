@@ -92,6 +92,8 @@ public class Projectile extends Entity {
             this.y = GamePanel.HORIZON - this.hitboxHeight;
             this.accY = 0;
             this.velY = 0;
+            this.velX = 0;
+            this.accX = 0;
         }
         if (data.curPickFrame < data.maxPickDelay) {
             data.curPickFrame++;  // Counts up

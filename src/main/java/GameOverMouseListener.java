@@ -10,6 +10,9 @@ public class GameOverMouseListener extends MouseAdapter {
         this.panel = panel;
     }
 
+    /**
+     * Check for mouse event
+     * */
     @Override
     public void mousePressed(MouseEvent e) {
         Point p = e.getPoint();
@@ -19,7 +22,7 @@ public class GameOverMouseListener extends MouseAdapter {
             panel.gameData = new GameData(panel.keyboard, panel);
             panel.leftBound = panel.gameData.leftBound;
             panel.rightBound = panel.gameData.rightBound;
-            panel.paused = false;
+            panel.lost = false;
         }
     }
 }

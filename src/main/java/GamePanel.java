@@ -123,7 +123,7 @@ public class GamePanel extends JPanel implements Runnable {
                 // Update game properties (skip when paused)
                 if (!paused && !lost) {
                     // Store the current frame
-                    gameData.framePassed+=10;
+                    gameData.framePassed++;
                     if (gameData.framePassed >= gameData.NEXT_DAY_FRAME) {
                         gameData.framePassed = 0;
                         gameData.dayPassed++;
@@ -256,6 +256,9 @@ public class GamePanel extends JPanel implements Runnable {
                     }
                 }
             } else if (Objects.requireNonNull(projectile.data.getId()) == GameData.ItemID.ARROW) {
+                if (projectile.y + projectile.hitboxHeight >= HORIZON) {  // Hits ground
+                    gameData.allProjectiles.remove(projectile);
+                }
                 // Enemies loose hp if hit by arrow
                 for (Enemy enemy : gameData.allEnemies) {
                     if (GameData.isInside(enemy,  projectile)) {
@@ -331,16 +334,23 @@ public class GamePanel extends JPanel implements Runnable {
         boolean isNight;
         // Updates background
         gameData.changeSkyColor(MAX_BLUE, MIN_BLUE, RED_DIFF, GREEN_DIFF);  // Sky
-        if (gameData.framePassed < gameData.NIGHT_FRANE) {  // Noon
+        if (gameData.framePassed == 0) {  // At day
+            int bound = gameData.allPortals.size();
+            int choice = rand.nextInt(bound);
+            gameData.allHumans.addAll(gameData.allPortals.get(choice).generateNPC(gameData.townCenter));
+            isNight = false;
+        } else if (gameData.framePassed < gameData.NIGHT_FRANE) {  // Noon
             // Sun's orbit
             gameData.sun.update(gameData.framePassed);
+            // Spawn new NPC
+
             isNight = false;
         } else if (gameData.framePassed == gameData.NIGHT_FRANE) {  // At Night
             // Choose a random portal to spawn enemy
             int bound = gameData.allPortals.size();
             int choice = rand.nextInt(bound);
-            isNight = true;
             gameData.allEnemies.addAll(gameData.allPortals.get(choice).generateEnemies());
+            isNight = true;
         } else {  // Night
             // Moon's orbit
             int sinceNight = gameData.framePassed - gameData.NIGHT_FRANE;
@@ -386,16 +396,23 @@ public class GamePanel extends JPanel implements Runnable {
                 }
             }
             human.update(isNight);
+            // Toss coins if player is near
+            if (human.moneyBag.numCoins > 0 && GameData.isInside(human, gameData.player)) {
+                Projectile coin = human.moneyBag.tossCoin("NPC");
+                if (coin != null) {
+                    gameData.allProjectiles.add(coin);
+                }
+            }
             if (human.id == GameData.JobID.ARCHER) {
                 // Attempt to attack enemy
                 for (Enemy enemy : gameData.allEnemies) {
-                    if (GameData.getDist(enemy, human) <= 100 * SCALE_PIXEL
-                            && human.shootFrame <= 0) {
+                    if (GameData.getDist(enemy, human) <= 400 * SCALE_PIXEL
+                            && human.curShootCD <= 0) {
 
                         Projectile arrow = human.shoot(enemy);
                         if (arrow != null) {
                             gameData.allProjectiles.add(arrow);
-                            human.shootFrame = human.shootDelay;
+                            human.curShootCD = human.shootCD;
                         }
                     }
                 }
@@ -514,6 +531,14 @@ public class GamePanel extends JPanel implements Runnable {
         int textY = menuY + 40 * SCALE_PIXEL;
         g2d.drawString(title, textX, textY);
 
+        // Draw day record
+        g2d.setColor(new Color(165, 161, 161));
+        g2d.setFont(titleFont);
+        String days = String.format("Day: %d", gameData.dayPassed);
+        int dayX = 2 * PANEL_WIDTH / 3 + fontMetrics.stringWidth(title) / 2;
+        int dayY = menuY + 40 * SCALE_PIXEL;
+        g2d.drawString(days, dayX, dayY);
+
         // Draw buttons
         renderButton(g2d, resumeBtn, "Resume");
         renderButton(g2d, restartBtn, "Restart");
@@ -607,13 +632,20 @@ public class GamePanel extends JPanel implements Runnable {
         }
         if (lost) {
             g2d.setColor(new Color(46, 34, 31));
-            g2d.fillRect(0, 0, PANEL_WIDTH, PANEL_HEIGHT);
+            g2d.fillRect(0, 0, PANEL_WIDTH, PANEL_HEIGHT);  // Fills background
             g2d.setFont(titleFont);
             g2d.setColor(new Color(197, 28, 44));
             FontMetrics fontMetrics = g2d.getFontMetrics();
             String title = "GAME OVER";
             int textX = PANEL_WIDTH / 2 - fontMetrics.stringWidth(title) / 2;
             int textY = HORIZON - 80 * SCALE_PIXEL;
+            g2d.setFont(titleFont);
+            // Survived days
+            g2d.setColor(new Color(165, 161, 161));
+            String days = String.format("Survived %d Days", gameData.dayPassed);
+            int dayX = PANEL_WIDTH / 2 - fontMetrics.stringWidth(days) / 2;
+            int dayY = HORIZON - 30 * SCALE_PIXEL;
+            g2d.drawString(days, dayX, dayY);
             g2d.drawString(title, textX, textY);
             renderButton(g2d, respawnBtn, "New Game");
         }
