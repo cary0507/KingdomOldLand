@@ -2,6 +2,9 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+/**
+ * <a href="https://www.geeksforgeeks.org/java/mouselistener-mousemotionlistener-java/">Click</a>
+ * */
 public class PauseMenuMouseListener extends MouseAdapter {
 
     /**

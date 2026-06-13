@@ -1,9 +1,7 @@
-import java.util.ArrayList;
-
 public class Structure extends Entity {
     public int maxHP;
     public int curHP;
-    public GameData.StructureID id;
+    public final GameData.StructureID id;
 
     /**
      * Initializes the structure with its position, dimensions, hit points, and image path.

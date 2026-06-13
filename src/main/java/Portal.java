@@ -2,14 +2,14 @@ import java.util.ArrayList;
 
 public class Portal extends Structure {
     public int numEnemy;  // Number of enemies will generate
-    public int numNPC;    // Number of NPC will generate
+    public final int NUM_NPC;    // Number of NPC will generate
 
     public Portal(int x, int y, GamePanel gamePanel, boolean isFacingLeft) {
         super(x, y, 0, GameData.StructureID.PORTAL, gamePanel);
         setImagesFromPaths(GameData.portalImgL, GameData.portalImgR);
         this.isFacingLeft = isFacingLeft;
         numEnemy = 1;
-        numNPC = 2;
+        NUM_NPC = 2;
     }
 
     /**
@@ -33,7 +33,7 @@ public class Portal extends Structure {
      * */
     public ArrayList<Human> generateNPC(Structure habitat) {
         ArrayList<Human> genNPC = new ArrayList<>();
-        for (int i = 0; i < numNPC; i++) {
+        for (int i = 0; i < NUM_NPC; i++) {
             Human human = new Human(x, GamePanel.HORIZON, GameData.VAGRANT_TOP_SPEED, habitat, gamePanel);
             human.isFacingLeft = this.isFacingLeft;
             human.y -= human.hitboxHeight;

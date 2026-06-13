@@ -50,10 +50,10 @@ public class Projectile extends Entity {
         double newVelY = this.velY + this.accY;
         double facingDir = Math.atan2(velY, velX);  // Gets facing direction from the current velocity vector
         double velMagnitude = Math.sqrt(newVelX * newVelX + newVelY * newVelY);
-        if (velMagnitude > this.maxSpeed) {  // Check for speed limit
+        if (velMagnitude > this.MAX_SPEED) {  // Check for speed limit
             // Break into components
-            double maxVelX = Math.cos(facingDir) * this.maxSpeed;
-            double maxVelY = Math.sin(facingDir) * this.maxSpeed;
+            double maxVelX = Math.cos(facingDir) * this.MAX_SPEED;
+            double maxVelY = Math.sin(facingDir) * this.MAX_SPEED;
             this.velX = maxVelX;
             this.velY = maxVelY;
         } else {
@@ -77,7 +77,7 @@ public class Projectile extends Entity {
     }
 
     public Projectile duplicate() {
-        Projectile projectile = new Projectile(this.x, this.y, this.maxSpeed, this.gamePanel, this.data);
+        Projectile projectile = new Projectile(this.x, this.y, this.MAX_SPEED, this.gamePanel, this.data);
         projectile.setMotionValues(velX, velY, accX, accY, damage, isOutOfBound);
         return projectile;
     }

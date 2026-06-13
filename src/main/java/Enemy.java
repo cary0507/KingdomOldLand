@@ -41,10 +41,10 @@ public class Enemy extends Entity {
         }
         if (x <= GameData.getCenterX(target)) {
             isFacingLeft = false;
-            x += (int) maxSpeed;
+            x += (int) MAX_SPEED;
         } else {
             isFacingLeft = true;
-            x -= (int) maxSpeed;
+            x -= (int) MAX_SPEED;
         }
     }
 }

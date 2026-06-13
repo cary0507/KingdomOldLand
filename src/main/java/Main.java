@@ -1,6 +1,5 @@
 /*
 * Author: Cary
-* Description:
 * */
 
 import javax.swing.JFrame;

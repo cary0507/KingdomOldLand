@@ -6,7 +6,7 @@ import java.io.ObjectOutputStream;
 import java.io.IOException;
 
 public class Entity implements Serializable {
-    public final double maxSpeed;
+    public final double MAX_SPEED;
     // The pixels on the screen has to be a whole number, hence the int type.
     public int x;
     public int y;
@@ -37,7 +37,7 @@ public class Entity implements Serializable {
         this.gamePanel = gamePanel;
         this.x = x;
         this.y = y;
-        this.maxSpeed = maxSpeed;
+        this.MAX_SPEED = maxSpeed;
         imgIndex = 0;
         passedFrame = 0;
     }
@@ -107,7 +107,7 @@ public class Entity implements Serializable {
      * Returns a duplicate of the entity with the same position, hitbox dimensions, movement parameters, and images.
      * */
     public Entity duplicate() {
-        Entity duplicate = new Entity(x, y, maxSpeed, gamePanel);
+        Entity duplicate = new Entity(x, y, MAX_SPEED, gamePanel);
         duplicate.setImages(leftImages, rightImages);
         return duplicate;
     }

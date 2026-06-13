@@ -1,12 +1,13 @@
 /*
  * Author: Cary
- * Description:
  * */
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-
+/**
+ * <a href="https://www.youtube.com/watch?v=oPzPpUcDiYY&list=PL_QPQmz5C6WUF-pOQDsbsKbaBZqXj4qSq&index=8">Reference</a>
+ * */
 public class KeyHandler implements KeyListener {
     public boolean downPressed, leftPressed, rightPressed, escPressed;
     public boolean downPressedOnce;  // Activate only once per press

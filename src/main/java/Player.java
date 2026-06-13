@@ -1,7 +1,7 @@
 import java.awt.*;
 
 public class Player extends Entity {
-    public final MoneyBag moneyBag;
+    public final MoneyBag MONEY_BAG;
     public Mountable mount;
     transient KeyHandler keyInput;
 
@@ -21,7 +21,7 @@ public class Player extends Entity {
         );
         this.mount.passenger = this;    // Sets the player as the passenger
         this.mount.anchorsPassenger();  // Anchor the player to the mount's position
-        moneyBag = new MoneyBag(10, x, y, gamePanel);
+        MONEY_BAG = new MoneyBag(10, x, y, gamePanel);
     }
 
     /**
@@ -45,7 +45,7 @@ public class Player extends Entity {
         super.update();
         // Update player's actions based on key inputs while mounted
         if (keyInput.downPressedOnce) {
-            Projectile tossedCoin = moneyBag.tossCoin("player");
+            Projectile tossedCoin = MONEY_BAG.tossCoin("player");
             if (tossedCoin != null) {
                 gamePanel.gameData.allProjectiles.add(tossedCoin);
             }
@@ -69,13 +69,13 @@ public class Player extends Entity {
             }
         }
         // Updates the dropping location
-        moneyBag.dropX = x;
-        moneyBag.dropY = y;
+        MONEY_BAG.dropX = x;
+        MONEY_BAG.dropY = y;
     }
 
     @Override
     public void render(Graphics2D g2, Camera referenceCam) {
         super.render(g2, referenceCam);
-        moneyBag.render(g2);
+        MONEY_BAG.render(g2);
     }
 }

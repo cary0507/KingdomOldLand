@@ -2,7 +2,6 @@ public class Mountable extends Entity {
     public final int MAX_STAMINA;
     public int stamina;
     public double curSpeed;
-    public boolean isFrightened;  // Whether the mount is currently frightened and cannot move
     // Offset values when facing left
     private int passengerXOffsetL;
     private int passengerYOffsetL;
@@ -24,7 +23,6 @@ public class Mountable extends Entity {
         super(x, y, maxSpeed, gamePanel);
         this.MAX_STAMINA = maxStamina;
         this.stamina = maxStamina;
-        this.isFrightened = false;
         curSpeed = maxSpeed;
     }
 

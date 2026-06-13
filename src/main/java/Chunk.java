@@ -7,7 +7,7 @@ import java.io.IOException;
 
 public class Chunk implements Serializable {
     public final int x, y;
-    public final int hitboxWidth, hitboxHeight;
+    public final int HITBOX_WIDTH, HITBOX_HEIGHT;
     public GameData.ChunkID id;
     public transient BufferedImage img;
     public String imagePath;  // Store path for serialization/deserialization
@@ -18,8 +18,8 @@ public class Chunk implements Serializable {
         this.id = chunkID;
         this.imagePath = imagePath;  // Store path for serialization
         img = GameData.pathToImage(imagePath);
-        hitboxWidth = img.getWidth() * GamePanel.SCALE_PIXEL;
-        hitboxHeight = img.getHeight() * GamePanel.SCALE_PIXEL;
+        HITBOX_WIDTH = img.getWidth() * GamePanel.SCALE_PIXEL;
+        HITBOX_HEIGHT = img.getHeight() * GamePanel.SCALE_PIXEL;
     }
 
     public void update(Player player) {

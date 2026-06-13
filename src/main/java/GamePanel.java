@@ -24,12 +24,13 @@ public class GamePanel extends JPanel implements Runnable {
     // Game state
     public boolean paused = false;
     public boolean lost = false;
-    // Pause UI
+    // Pause UI https://www.geeksforgeeks.org/java/java-swing-jpanel-with-examples/
     Rectangle resumeBtn;
     Rectangle restartBtn;
     Rectangle saveQuitBtn;
     // Lost UI
     Rectangle respawnBtn;
+    // https://docs.oracle.com/javase/8/docs/api/java/awt/Font.html
     private final Font titleFont = new Font("Algerian", Font.BOLD, 48);
     private final Font textFont = new Font("Algerian", Font.BOLD, 28);
     // Time
@@ -178,19 +179,19 @@ public class GamePanel extends JPanel implements Runnable {
                 if (GameData.isInside(projectile, gameData.player.mount)
                         && projectile.data.curPickFrame >= projectile.data.maxPickDelay) {  // Prevents instant pick
 
-                    gameData.player.moneyBag.addCoin(projectile, "player");
+                    gameData.player.MONEY_BAG.addCoin(projectile, "player");
                     gameData.allProjectiles.remove(projectile);
                     return;
                 }
                 // Humans can pick up coin only if they have space for their money bag
                 for (Human human : gameData.allHumans) {
                     if (GameData.isInside(human, projectile)
-                            && human.moneyBag.capacity > human.moneyBag.numCoins
+                            && human.MONEY_BAG.capacity > human.MONEY_BAG.numCoins
                             // Can only pick up coins thrown by player
                             && projectile.data.owner != null  // Order matters
                             && projectile.data.owner.equalsIgnoreCase("player")) {
 
-                        human.moneyBag.addCoin(projectile, "human");
+                        human.MONEY_BAG.addCoin(projectile, "human");
                         gameData.allProjectiles.remove(projectile);
                         return;
                     }
@@ -357,8 +358,8 @@ public class GamePanel extends JPanel implements Runnable {
             }
             human.update(isNight);
             // Toss coins if player is near
-            if (human.moneyBag.numCoins > 0 && GameData.isInside(human, gameData.player)) {
-                Projectile coin = human.moneyBag.tossCoin("NPC");
+            if (human.MONEY_BAG.numCoins > 0 && GameData.isInside(human, gameData.player)) {
+                Projectile coin = human.MONEY_BAG.tossCoin("NPC");
                 if (coin != null) {
                     gameData.allProjectiles.add(coin);
                 }
@@ -372,20 +373,20 @@ public class GamePanel extends JPanel implements Runnable {
                         Projectile arrow = human.shoot(enemy);
                         if (arrow != null) {
                             gameData.allProjectiles.add(arrow);
-                            human.curShootCD = human.shootCD;
+                            human.curShootCD = human.SHOOT_CD;
                         }
                     }
                 }
             }
             // Farmer is the player's main income
             else if (human.id == GameData.JobID.FARMER
-                    && human.moneyBag.numCoins < human.moneyBag.capacity
+                    && human.MONEY_BAG.numCoins < human.MONEY_BAG.capacity
                     && gameData.framePassed == 0) {
                 // Every day generate 1 coin
                 ItemData coinData = new ItemData(
                         GameData.ItemID.COIN, GameData.coinImg, GameData.coinImg, true
                 );
-                human.moneyBag.addCoin(
+                human.MONEY_BAG.addCoin(
                         new Projectile(0, 0, 20, this, coinData), "NPC"
                 );
             }
@@ -430,10 +431,10 @@ public class GamePanel extends JPanel implements Runnable {
             // Attacking player
             if (GameData.isInside(enemy, gameData.player)) {
                 if (enemy.curCooldown <= 0) {
-                    if (gameData.player.moneyBag.numCoins < 1) {  // When player has no coin to block the attack
+                    if (gameData.player.MONEY_BAG.numCoins < 1) {  // When player has no coin to block the attack
                         lost = true;
                     }
-                    Projectile coin = gameData.player.moneyBag.tossCoin("player");
+                    Projectile coin = gameData.player.MONEY_BAG.tossCoin("player");
                     if (coin != null) {
                         coin.isOutOfBound = true;  // Fall out of background
                         gameData.allProjectiles.add(coin);
@@ -576,6 +577,7 @@ public class GamePanel extends JPanel implements Runnable {
         // Draw title
         g2d.setFont(titleFont);
         g2d.setColor(new Color(227, 190, 98));
+        // https://docs.oracle.com/javase/8/docs/api/java/awt/FontMetrics.html
         FontMetrics fontMetrics = g2d.getFontMetrics();
         String title = "Paused";
         int textX = menuW / 2 - fontMetrics.stringWidth(title) / 2;

@@ -6,10 +6,10 @@ import java.io.IOException;
 public class Camera implements Serializable {
     public int x;
     public int y;
-    public int width;
-    public int height;
-    public int deadZoneWidth;
-    public int deadZoneHeight;
+    public final int WIDTH;
+    public final int HEIGHT;
+    public final int DEAD_ZONE_WIDTH;
+    public final int DEAD_ZONE_HEIGHT;
     transient GamePanel gamePanel;
 
     /**
@@ -25,10 +25,10 @@ public class Camera implements Serializable {
         this.gamePanel = gamePanel;
         this.x = x;
         this.y = y;
-        this.width = GamePanel.PANEL_WIDTH;
-        this.height = GamePanel.PANEL_HEIGHT;
-        this.deadZoneWidth = deadZoneWidth;
-        this.deadZoneHeight = deadZoneHeight;
+        this.WIDTH = GamePanel.PANEL_WIDTH;
+        this.HEIGHT = GamePanel.PANEL_HEIGHT;
+        this.DEAD_ZONE_WIDTH = deadZoneWidth;
+        this.DEAD_ZONE_HEIGHT = deadZoneHeight;
     }
 
     /**
@@ -57,26 +57,26 @@ public class Camera implements Serializable {
     public void focusOn(Entity mainFocus) {
         // Stores calculation in variables
         // See /rough draft.png
-        int right = x + this.width;
-        int bottom = y + this.height;
-        int freeLeft = x + deadZoneWidth;
-        int freeTop = y + deadZoneHeight;
-        int freeRight = right - deadZoneWidth;
-        int freeBottom = bottom - deadZoneHeight;
+        int right = x + this.WIDTH;
+        int bottom = y + this.HEIGHT;
+        int freeLeft = x + DEAD_ZONE_WIDTH;
+        int freeTop = y + DEAD_ZONE_HEIGHT;
+        int freeRight = right - DEAD_ZONE_WIDTH;
+        int freeBottom = bottom - DEAD_ZONE_HEIGHT;
         int mainFocusRight = mainFocus.x + mainFocus.hitboxWidth;
         int mainFocusBottom = mainFocus.y + mainFocus.hitboxHeight;
         // Check for each boundary
         if (mainFocus.x < freeLeft) {       // Out of left bound
-            this.x = mainFocus.x - deadZoneWidth;
+            this.x = mainFocus.x - DEAD_ZONE_WIDTH;
         }
         if (mainFocus.y < freeTop) {        // Out of top bound
-            this.y = mainFocus.y - deadZoneHeight;
+            this.y = mainFocus.y - DEAD_ZONE_HEIGHT;
         }
         if (mainFocusRight > freeRight) {   // Out of right bound
-            this.x = mainFocusRight + deadZoneWidth - this.width;
+            this.x = mainFocusRight + DEAD_ZONE_WIDTH - this.WIDTH;
         }
         if (mainFocusBottom > freeBottom) { // Out of bottom bound
-            this.y = mainFocusBottom + deadZoneHeight - this.height;
+            this.y = mainFocusBottom + DEAD_ZONE_HEIGHT - this.HEIGHT;
         }
     }
 

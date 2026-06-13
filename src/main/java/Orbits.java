@@ -15,16 +15,16 @@ public class Orbits implements Serializable {
     int centerX, centerY;  // Orbit's location
     transient BufferedImage image;
     String imagePath;  // Store path for serialization/deserialization
-    int trackWidth, trackHeight;
-    int trackCenterX, trackCenterY;  // Trajectory's location
-    int halfTrackTime;  // Frames it takes to complete half a period
+    final int TRACK_WIDTH, TRACK_HEIGHT;
+    final int TRACK_CENTER_X, TRACK_CENTER_Y;  // Trajectory's location
+    final int HALF_PERIOD;  // Frames it takes to complete half a period
 
     public Orbits(int trackWidth, int trackHeight, int trackCenterX, int trackCenterY, int halfTrackTime) {
-        this.trackWidth = trackWidth;
-        this.trackHeight = trackHeight;
-        this.trackCenterX = trackCenterX;
-        this.trackCenterY = trackCenterY;
-        this.halfTrackTime = halfTrackTime;
+        this.TRACK_WIDTH = trackWidth;
+        this.TRACK_HEIGHT = trackHeight;
+        this.TRACK_CENTER_X = trackCenterX;
+        this.TRACK_CENTER_Y = trackCenterY;
+        this.HALF_PERIOD = halfTrackTime;
     }
 
     public void setImageFromPath(String imgPath) {
@@ -39,14 +39,14 @@ public class Orbits implements Serializable {
      * Formula: f(x)=amplitude * sin(k(x-p))+q
      * */
     public void update(int passedFrame) {
-        double kVal = Math.PI / halfTrackTime;  // Calculates k value
-        int amplitudeWidth = trackWidth / 2;
-        int amplitudeHeight = trackHeight / 2;
+        double kVal = Math.PI / HALF_PERIOD;  // Calculates k value
+        int amplitudeWidth = TRACK_WIDTH / 2;
+        int amplitudeHeight = TRACK_HEIGHT / 2;
         centerX = (int) Math.floor(
-                -amplitudeWidth * Math.cos(kVal * passedFrame) + trackCenterX
+                -amplitudeWidth * Math.cos(kVal * passedFrame) + TRACK_CENTER_X
         );
         centerY = (int) Math.floor(  // Windows y-axis is reflected, therefore - amplitude
-                -amplitudeHeight * Math.sin(kVal * passedFrame) + trackCenterY
+                -amplitudeHeight * Math.sin(kVal * passedFrame) + TRACK_CENTER_Y
         );
     }
 
