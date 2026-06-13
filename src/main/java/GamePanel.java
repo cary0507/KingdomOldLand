@@ -231,7 +231,7 @@ public class GamePanel extends JPanel implements Runnable {
                             case BOW_SHELF:
                                 // Sets up data
                                 ItemData bowItemData = new ItemData(
-                                        GameData.ItemID.BOW, GameData.bowItemImg, GameData.bowItemImg, true
+                                        GameData.ItemID.BOW, GameData.BOW_ITEM_IMG, GameData.BOW_ITEM_IMG, true
                                 );
                                 // Sets up item
                                 Projectile bowItem = new Projectile(
@@ -244,7 +244,7 @@ public class GamePanel extends JPanel implements Runnable {
                             case SICKLE_SHELF:
                                 // Sets up data
                                 ItemData sickleItemData = new ItemData(
-                                        GameData.ItemID.SICKLE, GameData.sickleItemImg, GameData.sickleItemImg,
+                                        GameData.ItemID.SICKLE, GameData.SICKLE_ITEM_IMG, GameData.SICKLE_ITEM_IMG,
                                         true
                                 );
                                 // Sets up item

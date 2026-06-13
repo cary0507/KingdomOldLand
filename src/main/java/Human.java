@@ -23,7 +23,7 @@ public class Human extends Entity {
         this.habitat = habitat;
         wanderFrame = 0;
         MONEY_BAG = new MoneyBag(1, x, y, gamePanel);
-        setImagesFromPaths(GameData.humanImgL,  GameData.humanImgR);
+        setImagesFromPaths(GameData.HUMAN_IMG_L,  GameData.HUMAN_IMG_R);
         SHOOT_CD = GamePanel.FPS;  // 1 second cooldown
         curShootCD = SHOOT_CD;
         inSearch = false;
@@ -78,7 +78,7 @@ public class Human extends Entity {
             facing = rand.nextInt(-15 - (-45) + 1) - 45;
         }
         ItemData arrowData = new ItemData(
-                GameData.ItemID.ARROW, GameData.arrowImgL, GameData.arrowImgR, false
+                GameData.ItemID.ARROW, GameData.ARROW_IMG_L, GameData.ARROW_IMG_R, false
         );
         Projectile arrow = new Projectile(
                 GameData.getCenterX(this), y + hitboxHeight / 2,

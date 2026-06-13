@@ -17,7 +17,7 @@ public class Player extends Entity {
         this.mount = mount;
         holdingItem = new PickedItem(new ItemData(
                 GameData.ItemID.CROWN, 3, -2, 8, -2,
-                GameData.crownImgL, GameData.crownImgR)
+                GameData.CROWN_IMG_L, GameData.CROWN_IMG_R)
         );
         this.mount.passenger = this;    // Sets the player as the passenger
         this.mount.anchorsPassenger();  // Anchor the player to the mount's position

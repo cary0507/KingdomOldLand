@@ -6,7 +6,7 @@ public class Portal extends Structure {
 
     public Portal(int x, int y, GamePanel gamePanel, boolean isFacingLeft) {
         super(x, y, 0, GameData.StructureID.PORTAL, gamePanel);
-        setImagesFromPaths(GameData.portalImgL, GameData.portalImgR);
+        setImagesFromPaths(GameData.PORTAL_IMG_L, GameData.PORTAL_IMG_R);
         this.isFacingLeft = isFacingLeft;
         numEnemy = 1;
         NUM_NPC = 2;

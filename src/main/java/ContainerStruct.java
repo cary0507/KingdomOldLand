@@ -21,7 +21,7 @@ public class ContainerStruct extends Structure {
         } else {
             this.containing = null;
         }
-        payImg = GameData.pathToImage(GameData.payHint[0]);
+        payImg = GameData.pathToImage(GameData.PAY_HINT[0]);
         numItems = 0;
     }
 
@@ -109,7 +109,7 @@ public class ContainerStruct extends Structure {
     private void readObject(ObjectInputStream objIn) throws IOException, ClassNotFoundException {
         objIn.defaultReadObject();
         // Reload payImg from data
-        payImg = GameData.pathToImage(GameData.payHint[0]);
+        payImg = GameData.pathToImage(GameData.PAY_HINT[0]);
     }
 
     /**

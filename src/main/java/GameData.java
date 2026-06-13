@@ -14,93 +14,93 @@ public class GameData implements Serializable {
     public static final double VAGRANT_TOP_SPEED = 1.0;
     public static final double ENEMY_TOP_SPEED = 5.0;
     // Image paths
-    public final static String[] playerImgL = {
+    public final static String[] PLAYER_IMG_L = {
             "/raw images/Player/king left.png",
     };
-    public final static String[] playerImgR = {
+    public final static String[] PLAYER_IMG_R = {
             "/raw images/Player/king right.png",
     };
-    public final static String[] crownImgL = {
+    public final static String[] CROWN_IMG_L = {
             "/raw images/Crown/crown left.png"
     };
-    public final static String[] crownImgR = {
+    public final static String[] CROWN_IMG_R = {
             "/raw images/Crown/crown right.png"
     };
-    public final static String[] brownHorseImgL = {
+    public final static String[] BROWN_HORSE_IMG_L = {
             "/raw images/Mountable/brown horse left.png",
     };
-    public final static String[] brownHorseImgR = {
+    public final static String[] BROWN_HORSE_IMG_R = {
             "/raw images/Mountable/brown horse right.png",
     };
-    public final static String[] chunksImg = {
+    public final static String[] CHUNKS_IMG = {
             "/raw images/Chunk/bare dirt.png",
             "/raw images/Chunk/bare dirt.png",
             "/raw images/Chunk/Plain.png"
     };
-    public final static String[] payHint = {
+    public final static String[] PAY_HINT = {
             "/raw images/Coin/Trade/Pay.png"
     };
     public static String[] coinImg;
-    public final static String[] moneyBagImg = {
+    public final static String[] MONEY_BAG_IMG = {
             "/raw images/Money bag/empty.png",
             "/raw images/Money bag/1~5.png",
             "/raw images/Money bag/6~10.png"
     };
-    public final static String[] wallImgL = {
+    public final static String[] WALL_IMG_L = {
             "/raw images/Wall/lvl0/Wall lvl 0 L.png",
             "/raw images/Wall/lvl1/Wall lvl 1 L.png",
             "/raw images/Wall/lvl2/Wall lvl 2 L.png"
     };
-    public final static String[] wallImgR = {
+    public final static String[] WALL_IMG_R = {
             "/raw images/Wall/lvl0/Wall lvl 0 R.png",
             "/raw images/Wall/lvl1/Wall lvl 1 R.png",
             "/raw images/Wall/lvl2/Wall lvl 2 R.png"
     };
-    public final static String[] townCenterImg = {
+    public final static String[] TOWN_CENTER_IMG = {
             "/raw images/Town center/lvl0/Town center lvl0.png",
             "/raw images/Town center/lvl1/Town center lvl1 anim1.png",
             "/raw images/Town center/lvl2/Town center lvl 2 1.png"
     };
-    public final static String[] humanImgL = {
+    public final static String[] HUMAN_IMG_L = {
             "/raw images/NPC/vagrant L.png",
             "/raw images/NPC/Villager L.png",
             "/raw images/NPC/Farmer L.png",
             "/raw images/NPC/Archer L.png"
     };
-    public final static String[] humanImgR = {
+    public final static String[] HUMAN_IMG_R = {
             "/raw images/NPC/vagrant R.png",
             "/raw images/NPC/Villager R.png",
             "/raw images/NPC/Farmer L.png",
             "/raw images/NPC/Archer R.png"
     };
-    public final static String[] portalImgL = {
+    public final static String[] PORTAL_IMG_L = {
             "/raw images/Portal/Portal L.png",
     };
-    public final static String[] portalImgR = {
+    public final static String[] PORTAL_IMG_R = {
             "/raw images/Portal/Portal R.png"
     };
-    public final static String[] enemyImgL = {
+    public final static String[] ENEMY_IMG_L = {
             "/raw images/Greedling/Greedling L.png"
     };
-    public final static String[] enemyImgR = {
+    public final static String[] ENEMY_IMG_R = {
             "/raw images/Greedling/Greedling R.png"
     };
-    public final static String[] bowShopImg = {
+    public final static String[] BOW_SHOP_IMG = {
             "/raw images/vendor/bow shop.png"
     };
-    public final static String[] sickleShopImg = {
+    public final static String[] SICKLE_SHOP_IMG = {
             "/raw images/vendor/sickle shop.png"
     };
-    public final static String[] bowItemImg = {
+    public final static String[] BOW_ITEM_IMG = {
             "raw images/Items/bow.png"
     };
-    public final static String[] sickleItemImg = {
+    public final static String[] SICKLE_ITEM_IMG = {
             "raw images/Items/sickle.png"
     };
-    public final static String[] arrowImgL = {
+    public final static String[] ARROW_IMG_L = {
             "/raw images/Arrow/arrow L.png"
     };
-    public final static String[] arrowImgR = {
+    public final static String[] ARROW_IMG_R = {
             "/raw images/Arrow/arrow R.png"
     };
     // Object IDs
@@ -231,7 +231,7 @@ public class GameData implements Serializable {
                 100,
                 gamePanel
         );
-        mount.setImagesFromPaths(brownHorseImgL, brownHorseImgR);
+        mount.setImagesFromPaths(BROWN_HORSE_IMG_L, BROWN_HORSE_IMG_R);
         // adjust y after hitbox height is known
         mount.y -= mount.hitboxHeight;
         mount.setPassengerOffset(14, 7, 12, 7);
@@ -256,7 +256,7 @@ public class GameData implements Serializable {
      * */
     public Human spawnNPC(int x) {
         Human npc = new Human(x, GamePanel.HORIZON, NPC_TOP_SPEED, townCenter, gamePanel);
-        npc.setImagesFromPaths(humanImgL, humanImgR);
+        npc.setImagesFromPaths(HUMAN_IMG_L, HUMAN_IMG_R);
         npc.y -= npc.hitboxHeight;
         return npc;
     }
@@ -271,7 +271,7 @@ public class GameData implements Serializable {
                 gamePanel
         );
         wallLeft.isFacingLeft = true;  // Facing left
-        wallLeft.setImagesFromPaths(wallImgL, wallImgR);
+        wallLeft.setImagesFromPaths(WALL_IMG_L, WALL_IMG_R);
         wallLeft.y -= wallLeft.hitboxHeight;  // Align bottom
         return wallLeft;  // Add object to game
     }
@@ -286,7 +286,7 @@ public class GameData implements Serializable {
                 gamePanel
         );
         wallRight.isFacingLeft = false;  // Facing right
-        wallRight.setImagesFromPaths(wallImgL, wallImgR);
+        wallRight.setImagesFromPaths(WALL_IMG_L, WALL_IMG_R);
         wallRight.x -= wallRight.hitboxWidth;   // Align right
         wallRight.y -= wallRight.hitboxHeight;  // Align bottom
         return wallRight;
@@ -309,7 +309,7 @@ public class GameData implements Serializable {
                 0, StructureID.SICKLE_SHELF,
                 sickleShopOffsets, gamePanel
         );
-        sickleShop.setImagesFromPaths(sickleShopImg, sickleShopImg);
+        sickleShop.setImagesFromPaths(SICKLE_SHOP_IMG, SICKLE_SHOP_IMG);
         sickleShop.y -= sickleShop.hitboxHeight; // Align bottom
         return sickleShop;
     }
@@ -331,7 +331,7 @@ public class GameData implements Serializable {
                 0, StructureID.BOW_SHELF,
                 bowShopOffsets, gamePanel
         );
-        bowShop.setImagesFromPaths(bowShopImg, bowShopImg);
+        bowShop.setImagesFromPaths(BOW_SHOP_IMG, BOW_SHOP_IMG);
         bowShop.x -= bowShop.hitboxWidth;   // Align right
         bowShop.y -= bowShop.hitboxHeight;  // Align bottom
         return bowShop;
@@ -383,7 +383,7 @@ public class GameData implements Serializable {
             ChunkID chunkID = ChunkID.values()[code];
             // Creates the chunk
             Chunk curChunk = new Chunk(
-                    curChunkX, GamePanel.HORIZON - 2 * GamePanel.SCALE_PIXEL, chunkID, chunksImg[code]
+                    curChunkX, GamePanel.HORIZON - 2 * GamePanel.SCALE_PIXEL, chunkID, CHUNKS_IMG[code]
             );
             curChunkX += curChunk.HITBOX_WIDTH;  // Moves to the next Chunk's start
             allChunks.add(curChunk);  // Adds chunk to the game
@@ -403,7 +403,7 @@ public class GameData implements Serializable {
 
                 // Setup player
                 player = new Player(keyHandler, gamePanel, defaultHorse);
-                player.setImagesFromPaths(playerImgL, playerImgR);
+                player.setImagesFromPaths(PLAYER_IMG_L, PLAYER_IMG_R);
 
                 // Create a default wall structure to the left of spawn
                 int leftX = curChunkX - curChunk.HITBOX_WIDTH + 10 * GamePanel.SCALE_PIXEL;
@@ -436,7 +436,7 @@ public class GameData implements Serializable {
                 this.townCenter = new UpgradableStruct(
                         midX, GamePanel.HORIZON, StructureID.TOWN_CENTER, null, gamePanel
                 );
-                this.townCenter.setImagesFromPaths(townCenterImg, townCenterImg);  // Never turns and always at middle
+                this.townCenter.setImagesFromPaths(TOWN_CENTER_IMG, TOWN_CENTER_IMG);  // Never turns and always at middle
                 this.townCenter.x -= (int) (this.townCenter.hitboxWidth / 2);  // Align center
                 this.townCenter.y -= this.townCenter.hitboxHeight;             // Align bottom
                 allUpgradable.add(this.townCenter);

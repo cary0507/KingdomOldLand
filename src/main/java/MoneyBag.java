@@ -29,7 +29,7 @@ public class MoneyBag implements Serializable {
         this.dropX = dropX;
         this.dropY = dropY;
         this.gamePanel = gamePanel;
-        this.imagePaths = GameData.moneyBagImg;
+        this.imagePaths = GameData.MONEY_BAG_IMG;
         imageIndex = 0;
     }
 

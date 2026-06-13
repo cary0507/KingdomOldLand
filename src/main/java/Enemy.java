@@ -15,7 +15,7 @@ public class Enemy extends Entity {
      */
     public Enemy(int x, int y, double maxSpeed, GamePanel gamePanel) {
         super(x, y, maxSpeed, gamePanel);
-        setImagesFromPaths(GameData.enemyImgL, GameData.enemyImgR);
+        setImagesFromPaths(GameData.ENEMY_IMG_L, GameData.ENEMY_IMG_R);
     }
 
     /**
