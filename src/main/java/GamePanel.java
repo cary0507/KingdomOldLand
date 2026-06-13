@@ -13,8 +13,12 @@ import java.util.Random;
 public class GamePanel extends JPanel implements Runnable {
     // Environment settings
     // Store save file outside the project's JAR
-    public static final String SAVE_DIR = System.getProperty("user.home") + "/kingdomoldland/";  // Directory path
-    public static final String SAVE_FILE = SAVE_DIR + "save.ser";  // Save file path
+    // https://docs.oracle.com/javase/tutorial/essential/environment/sysprop.html
+    public static final String SAVE_DIR = System.getProperty("user.home")
+                                        + System.getProperty("file.separator")  // Ensure works on multiple OS
+                                        + "Desktop";  // Save in desktop
+    public static final String SAVE_FILE = SAVE_DIR
+                                         + System.getProperty("file.separator") +"kingdom old land save.ser";  // Save file path
     public static final int PANEL_WIDTH = 1200;
     public static final int PANEL_HEIGHT = 840;
     public static final int HORIZON = PANEL_HEIGHT - 300;
