@@ -4,7 +4,8 @@ public class ItemData implements Serializable {
     private final GameData.ItemID id;
     public String[] itemIconPathL;
     public String[] itemIconPathR;
-    public String[] thrownImgPath;
+    public String[] thrownImgPathL;
+    public String[] thrownImgPathR;
     public int iconXOffsetL;
     public int iconYOffsetL;
     public int iconXOffsetR;
@@ -33,11 +34,12 @@ public class ItemData implements Serializable {
     /**
      * Constructor for items as a Projectile
      * */
-    public ItemData(GameData.ItemID id, String[] thrownImgPath, boolean canPickUp) {
+     public ItemData(GameData.ItemID id, String[] thrownImgPathL, String[] thrownImgPathR, boolean canPickUp) {
         this.id = id;
-        this.thrownImgPath = thrownImgPath;
+        this.thrownImgPathL = thrownImgPathL;
+        this.thrownImgPathR = thrownImgPathR;
         this.canPickUp = canPickUp;
-        maxPickDelay = 2 * GamePanel.FPS;  // 2 seconds until the projectile can be pickup
+        maxPickDelay = 2 * GamePanel.FPS;
         curPickFrame = 0;
     }
 

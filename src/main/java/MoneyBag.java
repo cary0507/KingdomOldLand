@@ -70,7 +70,7 @@ public class MoneyBag implements Serializable {
             // Convert into a projectile
             Projectile tossedCoin = selectCoin.toss(dropX, dropY, 20, gamePanel);
             tossedCoin.data.owner = owner;
-            tossedCoin.setImagesFromPaths(tossedCoin.data.thrownImgPath, tossedCoin.data.thrownImgPath);
+            tossedCoin.setImagesFromPaths(tossedCoin.data.thrownImgPathL, tossedCoin.data.thrownImgPathR);
             tossedCoin.setMotionValues(
                     0, -3 * GamePanel.SCALE_PIXEL,   // Throws the coin upwards
                     0, GameData.GRAVITY,

@@ -19,7 +19,7 @@ public class Projectile extends Entity {
     public Projectile(int x, int y, double maxSpeed, GamePanel gamePanel, ItemData data) {
         super(x, y, maxSpeed, gamePanel);
         this.data = data;
-        setImagesFromPaths(data.thrownImgPath, data.thrownImgPath);
+        setImagesFromPaths(data.thrownImgPathL, data.thrownImgPathR);
     }
 
     /**
@@ -76,10 +76,16 @@ public class Projectile extends Entity {
         return itemForm;
     }
 
+    public Projectile duplicate() {
+        Projectile projectile = new Projectile(this.x, this.y, this.maxSpeed, this.gamePanel, this.data);
+        projectile.setMotionValues(velX, velY, accX, accY, damage, isOutOfBound);
+        return projectile;
+    }
+
     @Override
     public void update() {
         super.update();
-        if (this.y <= GamePanel.HORIZON - this.hitboxHeight) {
+        if (this.y <= GamePanel.HORIZON - this.hitboxHeight || isOutOfBound) {
             updateVelVectors();
             getDisplacement();
         } else {

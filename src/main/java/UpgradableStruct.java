@@ -12,7 +12,7 @@ public class UpgradableStruct extends ContainerStruct {
      * @param gamePanel    reference to the GamePanel the structure belongs to
      */
     public UpgradableStruct(int x, int y, GameData.StructureID id, int[][] relativePos, GamePanel gamePanel) {
-        super(x, y, 0, id, relativePos, gamePanel);
+        super(x, y, 1, id, relativePos, gamePanel);
         level = 0;
         maxLevel = 0;
     }

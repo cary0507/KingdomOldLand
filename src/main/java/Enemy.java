@@ -36,8 +36,8 @@ public class Enemy extends Entity {
      * Tracks the player
      * */
     public void update(Entity target) {
-        if (GameData.isInside(this, target)) {
-            return;
+        if (curCooldown > 0) {
+            curCooldown--;
         }
         if (x <= GameData.getCenterX(target)) {
             isFacingLeft = false;
@@ -45,9 +45,6 @@ public class Enemy extends Entity {
         } else {
             isFacingLeft = true;
             x -= (int) maxSpeed;
-        }
-        if (curCooldown < dmgCooldown) {
-            curCooldown++;
         }
     }
 }

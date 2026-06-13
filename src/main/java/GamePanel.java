@@ -6,6 +6,7 @@
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Random;
 
@@ -19,10 +20,13 @@ public class GamePanel extends JPanel implements Runnable {
     public int rightBound;
     // Game state
     public boolean paused = false;
-    // Pause menu UI
+    public boolean lost = false;
+    // Pause UI
     Rectangle resumeBtn;
     Rectangle restartBtn;
     Rectangle saveQuitBtn;
+    // Lost UI
+    Rectangle respawnBtn;
     private final Font titleFont = new Font("Algerian", Font.BOLD, 48);
     private final Font textFont = new Font("Algerian", Font.BOLD, 28);
     // Time
@@ -52,7 +56,15 @@ public class GamePanel extends JPanel implements Runnable {
         // Setup saved game data
         gameData = new GameData(keyboard, this);
         // Load the game
-        gameData = (GameData) gameData.loadGame("src/main/resources/serialized/save.ser");
+        try {
+            gameData = (GameData) gameData.loadGame("src/main/resources/serialized/save.ser");
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            gameData = new GameData(keyboard, this);
+            // Overwrite the file with a new game data if the file is empty
+            gameData.saveGame("src/main/resources/serialized/save.ser");
+        }
         gameData.resetTransient(this, keyboard);
         leftBound = gameData.leftBound;
         rightBound = gameData.rightBound;
@@ -67,8 +79,16 @@ public class GamePanel extends JPanel implements Runnable {
         restartBtn = new Rectangle(btnLeft, btnTop + btnH + yGap, btnW, btnH);
         saveQuitBtn = new Rectangle(btnLeft, btnTop + (btnH + yGap) * 2, btnW, btnH);
 
-        // Mouse listener for pause menu buttons
+        // Setup game lost button
+        int resW = 300;
+        int resH = 80;
+        int resX = PANEL_WIDTH / 2 - resW / 2;
+        int resY = PANEL_HEIGHT / 2 + resH;
+        respawnBtn = new Rectangle(resX, resY, resW, resH);
+
+        // Mouse listeners
         addMouseListener(new PauseMenuMouseListener(this));
+        addMouseListener(new GameOverMouseListener(this));
     }
 
     public void startGameThread() {
@@ -101,11 +121,12 @@ public class GamePanel extends JPanel implements Runnable {
                 }
 
                 // Update game properties (skip when paused)
-                if (!paused) {
+                if (!paused && !lost) {
                     // Store the current frame
-                    gameData.framePassed++;
+                    gameData.framePassed+=10;
                     if (gameData.framePassed >= gameData.NEXT_DAY_FRAME) {
                         gameData.framePassed = 0;
+                        gameData.dayPassed++;
                     }
                     update();
                 }
@@ -119,11 +140,34 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     /**
+     * Randomly choose a wall with level and hp greater than 0
+     * */
+    public UpgradableStruct getRandomWall() {
+        Random rand = new Random();
+        ArrayList<UpgradableStruct> availableWalls = new ArrayList<>();  // Store all that matched the requirement
+        for (UpgradableStruct upgradableStruct : gameData.allUpgradable) {
+            if (upgradableStruct.id == GameData.StructureID.WALL
+                    && upgradableStruct.level > 0
+                    && upgradableStruct.curHP > 0) {
+                availableWalls.add(upgradableStruct);
+            }
+        }
+        if (availableWalls.isEmpty()) {
+            return null;
+        }
+        // Returns a random wall
+        return availableWalls.get(rand.nextInt(availableWalls.size()));
+    }
+
+    /**
      * Handles the interactions between projectiles and other objects
      * */
     public void updateProjectiles () {
         for (int i = 0; i < gameData.allProjectiles.size(); i++) {
             Projectile projectile = gameData.allProjectiles.get(i);
+            if (projectile.y >= PANEL_HEIGHT) {  // Fall out of bound
+                gameData.allProjectiles.remove(projectile);
+            }
             projectile.update();
             // Check if this projectile is a coin
             if (Objects.requireNonNull(projectile.data.getId()) == GameData.ItemID.COIN) {
@@ -183,42 +227,97 @@ public class GamePanel extends JPanel implements Runnable {
                             case BOW_SHELF:
                                 // Sets up data
                                 ItemData bowItemData = new ItemData(
-                                        GameData.ItemID.BOW, GameData.bowItemImg, true
+                                        GameData.ItemID.BOW, GameData.bowItemImg, GameData.bowItemImg, true
                                 );
                                 // Sets up item
                                 Projectile bowItem = new Projectile(
                                         0, 0, GameData.UNIVERSAL_TOP_SPEED,
                                         this, bowItemData
                                 );
-                                // Add item to data
-                                gameData.allProjectiles.add(bowItem);
                                 // Add item to shelf
-                                containerStruct.addEntity(bowItem);
+                                containerStruct.addItem(bowItem);
                                 break;
                             case SICKLE_SHELF:
                                 // Sets up data
                                 ItemData sickleItemData = new ItemData(
-                                        GameData.ItemID.SICKLE, GameData.sickleItemImg, true
+                                        GameData.ItemID.SICKLE, GameData.sickleItemImg, GameData.sickleItemImg,
+                                        true
                                 );
                                 // Sets up item
                                 Projectile sickleItem = new Projectile(
                                         0, 0, GameData.UNIVERSAL_TOP_SPEED,
                                         this, sickleItemData
                                 );
-                                // Add item to data
-                                gameData.allProjectiles.add(sickleItem);
                                 // Add item to shelf
-                                containerStruct.addEntity(sickleItem);
+                                containerStruct.addItem(sickleItem);
                                 break;
                         }
                         return;
                     }
                 }
-            } else if (Objects.requireNonNull(projectile.data.getId()) == GameData.ItemID.BOW) {
-                // Villagers without a job can pick up
-                for (Human human : gameData.allHumans) {
-
+            } else if (Objects.requireNonNull(projectile.data.getId()) == GameData.ItemID.ARROW) {
+                // Enemies loose hp if hit by arrow
+                for (Enemy enemy : gameData.allEnemies) {
+                    if (GameData.isInside(enemy,  projectile)) {
+                        gameData.allProjectiles.remove(projectile);
+                        enemy.hp -= projectile.damage;
+                        return;
+                    }
                 }
+            }
+        }
+    }
+
+    /**
+     * Update all structure objects
+     * */
+    public void updateAllStructs() {
+        for (int i = 0; i < gameData.allContainers.size(); i++) {
+            ContainerStruct container = gameData.allContainers.get(i);
+            container.update();
+            // Check if it is holding item
+            if (container.numItems > 0) {
+                // Check for villager with no job
+                for (Human human : gameData.allHumans) {
+                    if (human.id == GameData.JobID.VILLAGER) {
+                        // Attract a villager
+                        human.habitat = container;  // Change destination
+                        human.inSearch = true;
+                        if (GameData.isInside(human, container)) {
+                            // Take away an item
+                            Projectile item = container.takeAway(container.numItems - 1);
+                            if (item.data.getId() == GameData.ItemID.BOW) {
+                                // Become an archer
+                                human.id = GameData.JobID.ARCHER;
+                            } else if (item.data.getId() == GameData.ItemID.SICKLE) {
+                                human.id = GameData.JobID.FARMER;
+                            }
+                            human.habitat = null;  // Will be reset when allHumans updated
+                            // Resets all humans' attentions
+                            for (Human h : gameData.allHumans) {
+                                h.inSearch = false;
+                            }
+                            return;
+                        }
+                    }
+                }
+            }
+        }
+        for (int i = 0; i < gameData.allUpgradable.size(); i++) {
+            UpgradableStruct upgradeStruct = gameData.allUpgradable.get(i);
+            upgradeStruct.update();
+            if (upgradeStruct.id == GameData.StructureID.WALL
+                    && upgradeStruct.curHP <= 0) {  // Resets the wall
+
+                UpgradableStruct newWall;
+                if (upgradeStruct.isFacingLeft) {
+                    newWall = gameData.getLeftWall(upgradeStruct.x);
+                } else {
+                    newWall = gameData.getRightWall(upgradeStruct.x + upgradeStruct.hitboxWidth);
+                }
+                // Replace the old one
+                gameData.allUpgradable.remove(upgradeStruct);
+                gameData.allUpgradable.add(newWall);
             }
         }
     }
@@ -237,7 +336,7 @@ public class GamePanel extends JPanel implements Runnable {
             gameData.sun.update(gameData.framePassed);
             isNight = false;
         } else if (gameData.framePassed == gameData.NIGHT_FRANE) {  // At Night
-            // ChobjOute a random portal to spawn enemy
+            // Choose a random portal to spawn enemy
             int bound = gameData.allPortals.size();
             int choice = rand.nextInt(bound);
             isNight = true;
@@ -258,36 +357,98 @@ public class GamePanel extends JPanel implements Runnable {
             mount.update();
         }
 
-        // Update each structure
-        for (int i = 0; i < gameData.allContainers.size(); i++) {
-            ContainerStruct container = gameData.allContainers.get(i);
-            container.update();
-        }
-        for (int i = 0; i < gameData.allUpgradable.size(); i++) {
-            UpgradableStruct upgradeStruct = gameData.allUpgradable.get(i);
-            upgradeStruct.update();
-        }
+        updateAllStructs();
 
         updateProjectiles();
 
         // Update each human
         for (int i = 0; i < gameData.allHumans.size(); i++) {
             Human human = gameData.allHumans.get(i);
+            // Becomes homeless again if hp <= 0
+            if (human.hp <= 0) {
+                human.id = GameData.JobID.FUGITIVE;
+                human.hp = 1;
+            }
             // Set the habitate
-            switch (human.id) {
-                case FUGITIVE:
-                case VILLAGER:
-                case FARMER:   // Fall through
-                    human.habitat = gameData.townCenter;  // They all live in town center
-                    break;
+            if (human.habitat == null) {
+                switch (human.id) {
+                    case FUGITIVE:
+                    case VILLAGER:
+                    case FARMER:   // Fall through
+                        human.habitat = gameData.townCenter;  // They all live in town center
+                        break;
+                    case ARCHER:
+                        if (getRandomWall() == null) {
+                            human.habitat = gameData.townCenter;
+                        } else {
+                            human.habitat = getRandomWall();
+                        }
+                }
             }
             human.update(isNight);
+            if (human.id == GameData.JobID.ARCHER) {
+                // Attempt to attack enemy
+                for (Enemy enemy : gameData.allEnemies) {
+                    if (GameData.getDist(enemy, human) <= 100 * SCALE_PIXEL
+                            && human.shootFrame <= 0) {
+
+                        Projectile arrow = human.shoot(enemy);
+                        if (arrow != null) {
+                            gameData.allProjectiles.add(arrow);
+                            human.shootFrame = human.shootDelay;
+                        }
+                    }
+                }
+            }
         }
 
         // Update each enemy
         for (int i = 0; i < gameData.allEnemies.size(); i++) {
             Enemy enemy = gameData.allEnemies.get(i);
             enemy.update(gameData.player);
+            // Enemy dies
+            if (enemy.hp <= 0) {
+                gameData.allEnemies.remove(enemy);
+            }
+            for (UpgradableStruct upgrade : gameData.allUpgradable) {
+                // Interaction with wall
+                if (upgrade.id == GameData.StructureID.WALL
+                        && upgrade.level > 0
+                        && upgrade.curHP > 0
+                        && GameData.isInside(enemy, upgrade)) {
+
+                    if (enemy.curCooldown <= 0) {
+                        upgrade.curHP -= enemy.damage;
+                        enemy.curCooldown = enemy.dmgCooldown;  // Reset attack cooldown
+                    }
+                    // Block the enemy
+                    if (enemy.isFacingLeft) {
+                        enemy.x = upgrade.x + upgrade.hitboxWidth;
+                    } else {
+                        enemy.x = upgrade.x - enemy.hitboxWidth;
+                    }
+                    return;
+                }
+                if (GameData.isInside(enemy, gameData.player)) {
+                    if (enemy.curCooldown <= 0) {
+                        if (gameData.player.moneyBag.numCoins < 1) {  // When player has no coin to block the attack
+                            lost = true;
+                        }
+                        Projectile coin = gameData.player.moneyBag.tossCoin("player");
+                        if (coin != null) {
+                            coin.isOutOfBound = true;  // Fall out of background
+                            gameData.allProjectiles.add(coin);
+                        }
+                        enemy.curCooldown = enemy.dmgCooldown;  // Reset attack cooldown
+                    }
+                    // Block the enemy
+                    if (enemy.isFacingLeft) {
+                        enemy.x = gameData.player.x + enemy.hitboxWidth;
+                    } else {
+                        enemy.x = gameData.player.x - enemy.hitboxWidth;
+                    }
+                }
+            }
         }
 
         // Update each chunk
@@ -366,7 +527,6 @@ public class GamePanel extends JPanel implements Runnable {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g;
-
         // Renders background
         this.setBackground(gameData.skyColor);
         if (gameData.framePassed <= gameData.NIGHT_FRANE) {
@@ -445,7 +605,18 @@ public class GamePanel extends JPanel implements Runnable {
         if (paused) {
             renderPauseMenu(g2d);
         }
-
+        if (lost) {
+            g2d.setColor(new Color(46, 34, 31));
+            g2d.fillRect(0, 0, PANEL_WIDTH, PANEL_HEIGHT);
+            g2d.setFont(titleFont);
+            g2d.setColor(new Color(197, 28, 44));
+            FontMetrics fontMetrics = g2d.getFontMetrics();
+            String title = "GAME OVER";
+            int textX = PANEL_WIDTH / 2 - fontMetrics.stringWidth(title) / 2;
+            int textY = HORIZON - 80 * SCALE_PIXEL;
+            g2d.drawString(title, textX, textY);
+            renderButton(g2d, respawnBtn, "New Game");
+        }
         // Dispose of the graphics context to free up resources
         g2d.dispose();
     }

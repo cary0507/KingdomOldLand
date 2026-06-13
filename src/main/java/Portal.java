@@ -20,11 +20,11 @@ public class Portal extends Structure {
         for (int i = 0; i < numEnemy; i++) {
             Enemy enemy = new Enemy(this.x, GamePanel.HORIZON, GameData.ENEMY_TOP_SPEED, this.gamePanel);
             enemy.isFacingLeft = this.isFacingLeft;
-            enemy.setBaseStats(1, 1, 30);
+            enemy.setBaseStats(1, 1, 4 * GamePanel.FPS);
             enemy.y -= enemy.hitboxHeight;
             genEnemies.add(enemy);
         }
-        numEnemy += 3;  // Enhance
+        numEnemy += 2;  // Enhance
         return genEnemies;
     }
 

@@ -8,6 +8,10 @@ public class Human extends Entity {
     public int maxWanderFrame = 2 * GamePanel.FPS;  // 2 seconds max
     public int wanderFrame;
     public int wanderChance = 500;  // Higher = less likely
+    public int shootDelay = 3 * GamePanel.SCALE_PIXEL;  // 1 second cooldown
+    public int shootFrame;  // Frames until able to shoot
+    public boolean inSearch;  // If NPC is looking for something
+    public int hp;
 
     /**
      * Initializes the entity with its position, hitbox dimensions, and movement parameters.
@@ -21,8 +25,14 @@ public class Human extends Entity {
         wanderFrame = 0;
         moneyBag = new MoneyBag(1, x, y, gamePanel);
         setImagesFromPaths(GameData.humanImgL,  GameData.humanImgR);
+        shootFrame = shootDelay;
+        inSearch = false;
+        hp = 1;
     }
 
+    /**
+     * Randomly work around in one direction for a period of time
+     * */
     public void wander() {
         if (wanderFrame <= 0) return;
         if (isFacingLeft) {
@@ -32,7 +42,10 @@ public class Human extends Entity {
         }
     }
 
-    public void goHme() {
+    /**
+     * Run to the destination
+     * */
+    public void goToDestination() {
         if (this.habitat == null) {
             return;
         }
@@ -45,6 +58,35 @@ public class Human extends Entity {
             this.isFacingLeft = true;
             this.x -= (int) this.maxSpeed;
         }
+    }
+
+    /**
+     * Shoot an arrow at the target
+     * */
+    public Projectile shoot(Entity target) {
+        if (shootFrame > 0) return null;
+        if (target == null) return null;
+        if (id != GameData.JobID.ARCHER) return null;  // Only archer is able to shoot
+        Random rand = new Random();
+        double velX;
+        // Get facing
+        if (x > target.x) {
+            isFacingLeft = true;
+            velX = -10;
+        } else {
+            isFacingLeft = false;
+            velX = 10;
+        }
+        double velY = -5;
+        ItemData arrowData = new ItemData(
+                GameData.ItemID.ARROW, GameData.arrowImgL, GameData.arrowImgR, false
+        );
+        Projectile arrow = new Projectile(
+                GameData.getCenterX(this), y + hitboxHeight / 2,
+                50, gamePanel, arrowData
+        );
+        arrow.setMotionValues(velX, velY, 0, GameData.GRAVITY, 1, false);
+        return arrow;
     }
 
     public void update(boolean isNight) {
@@ -68,11 +110,14 @@ public class Human extends Entity {
                 break;
             case ARCHER:
                 moneyBag.capacity = 11;
+                if (shootFrame > 0) {
+                    shootFrame--;
+                }
                 break;
         }
         // Day & night activities
-        if (isNight) {
-            goHme();  // Head back to habitat during night time
+        if (isNight || inSearch) {
+            goToDestination();  // Head back to habitat during nighttime
         } else {
             int rollWander = rand.nextInt(wanderChance);
             if (rollWander == 67) {

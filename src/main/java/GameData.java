@@ -76,7 +76,7 @@ public class GameData implements Serializable {
     public static String[] humanImgR = {
             "/raw images/NPC/vagrant R.png",
             "/raw images/NPC/Villager R.png",
-            "/raw images/NPC/Farmer R.png",
+            "/raw images/NPC/Farmer L.png",
             "/raw images/NPC/Archer R.png"
     };
     public static String[] portalImgL = {
@@ -103,6 +103,12 @@ public class GameData implements Serializable {
     public static String[] sickleItemImg = {
             "raw images/Items/sickle.png"
     };
+    public static String[] arrowImgL = {
+            "/raw images/Arrow/arrow L.png"
+    };
+    public static String[] arrowImgR = {
+            "/raw images/Arrow/arrow R.png"
+    };
     // Object IDs
     public enum ItemID {
         CROWN,
@@ -114,8 +120,8 @@ public class GameData implements Serializable {
     public enum JobID {
         FUGITIVE,
         VILLAGER,
-        ARCHER,
-        FARMER
+        FARMER,
+        ARCHER
     }
     public enum ChunkID {
         SPAWN_CHUNK,
@@ -135,6 +141,7 @@ public class GameData implements Serializable {
     public final int SUNSET_DURATION;   // Frames it takes for the sky to turn from bright to dark in seconds
     public final int NIGHT_FRANE;         // Starts enter night after 120 seconds passed
     public final int NEXT_DAY_FRAME;      // Starts entering next dat after 180 seconds passed
+    public int dayPassed;
     Color skyColor;
     // Background objects
     Orbits sun;
@@ -167,7 +174,7 @@ public class GameData implements Serializable {
     public GameData(KeyHandler keyHandler, GamePanel gamePanel) {
         // Initialize time
         framePassed = 0;
-
+        dayPassed = 0;
         // Converts time in seconds to frames
         SUNRISE_DURATION = 8 * GamePanel.FPS;
         SUNSET_DURATION = 5 * GamePanel.FPS;
@@ -241,10 +248,10 @@ public class GameData implements Serializable {
      * Drop a coin on the ground
      * */
     public Projectile getCoinOnGround(int x) {
-        ItemData coinData = new ItemData(ItemID.COIN, coinImg, true);
+        ItemData coinData = new ItemData(ItemID.COIN, coinImg, coinImg, true);
         Projectile coin = new Projectile(x, GamePanel.HORIZON, UNIVERSAL_TOP_SPEED, gamePanel, coinData);
         coin.setMotionValues(0, 0, 0, 0, 0, false);
-        coin.setImagesFromPaths(coin.data.thrownImgPath, coin.data.thrownImgPath);
+        coin.setImagesFromPaths(coin.data.thrownImgPathL, coin.data.thrownImgPathR);
         coin.data.curPickFrame = coin.data.maxPickDelay;
         coin.y -= coin.hitboxHeight;  // Align to ground
         return coin;
@@ -415,8 +422,8 @@ public class GameData implements Serializable {
                 allUpgradable.add(defaultWallR);
 
                 // Add 2 vagrants
-                allHumans.add(spawnNPC(leftX + 70 * GamePanel.SCALE_PIXEL));
-                allHumans.add(spawnNPC(leftX + 80 * GamePanel.SCALE_PIXEL));
+                allHumans.add(spawnNPC(leftX - 70 * GamePanel.SCALE_PIXEL));
+                allHumans.add(spawnNPC(leftX - 80 * GamePanel.SCALE_PIXEL));
 
                 // Create the item shops
                 ContainerStruct sickleShop = getSickleShop(leftX + 100 *  GamePanel.SCALE_PIXEL);
@@ -424,9 +431,9 @@ public class GameData implements Serializable {
                 ContainerStruct bowShop = getBowShop(rightX - 100 * GamePanel.SCALE_PIXEL);
                 allContainers.add(bowShop);
 
-                // Drop 5 coins
+                // Drop 8 coins
                 int midX = curChunkX - curChunk.hitboxWidth / 2;
-                for (int n = 0; n < 5; n++) {
+                for (int n = 0; n < 8; n++) {
                     int coinX = midX + 2 * GamePanel.SCALE_PIXEL * n;
                     allProjectiles.add(getCoinOnGround(coinX));
                 }

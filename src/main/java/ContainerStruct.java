@@ -1,12 +1,11 @@
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.Serializable;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.IOException;
 
 public class ContainerStruct extends Structure {
-    public Entity[] containing;
+    public Projectile[] containing;
     public int[][] relativePos;  // Stored x and y positions to anchor entities to the structure
     transient BufferedImage payImg;
     public int numItems;
@@ -18,7 +17,7 @@ public class ContainerStruct extends Structure {
         super(x, y, maxHP, id, gamePanel);
         this.relativePos = relativePos;
         if (relativePos != null) {
-            this.containing = new Entity[relativePos.length];
+            this.containing = new Projectile[relativePos.length];
         } else {
             this.containing = null;
         }
@@ -27,9 +26,9 @@ public class ContainerStruct extends Structure {
     }
 
     /**
-     * Adds an Entity to an empty slot of "containing"
+     * Adds an Projectile to an empty slot of "containing"
      * */
-    public void addEntity(Entity entity) {
+    public void addItem(Projectile entity) {
         // Loop through the array to find an empty spot
         for (int i = 0; i < containing.length; i++) {
             if (containing[i] == null) {
@@ -62,13 +61,13 @@ public class ContainerStruct extends Structure {
     }
 
     /**
-     * Take away the Entity at the specified index from the structure, returning a duplicate of it and setting the
+     * Take away the Projectile at the specified index from the structure, returning a duplicate of it and setting the
      * original reference to null.
      *
      * @param index the index of the entity to be taken away from the structure
      * */
-    public Entity takeAway(int index) {
-        Entity taken = this.containing[index].duplicate();
+    public Projectile takeAway(int index) {
+        Projectile taken = this.containing[index].duplicate();
         containing[index] = null;
         return taken;
     }
@@ -78,6 +77,18 @@ public class ContainerStruct extends Structure {
         anchorEntities();
     }
 
+    @Override
+    public void render(Graphics2D g2d, Camera cam) {
+        super.render(g2d, cam);
+        // Draw each item, if has any
+        if (containing != null) {
+            for (int i = 0; i < containing.length; i++) {
+                if (containing[i] != null) {
+                    containing[i].render(g2d, cam);
+                }
+            }
+        }
+    }
     /**
      * Renders tip to hint player to pay a coin
      * */
