@@ -50,7 +50,6 @@ public class Human extends Entity {
         if (this.habitat == null) {
             return;
         }
-        System.out.println(id + " go to destination");
         if (GameData.getDist(this, this.habitat) <= this.maxSpeed) {  // Anchors, if their distance is close enough
             GameData.setCenterX(this, GameData.getCenterX(this.habitat));
         } else if (GameData.getCenterX(this) < GameData.getCenterX(this.habitat)) {
@@ -103,12 +102,13 @@ public class Human extends Entity {
             case FUGITIVE:
                 MONEY_BAG.capacity = 1;
                 if (MONEY_BAG.numCoins >= MONEY_BAG.capacity) {  // Get hired and exhaust a coin
-                    this.MONEY_BAG.exhaustCoin();
+                    this.MONEY_BAG.tossCoin("none");
                     this.id = GameData.JobID.VILLAGER;
+                    // Upgrade max speed
+                    maxSpeed = GameData.NPC_TOP_SPEED;
                 }
                 break;
             case VILLAGER:
-                maxSpeed = GameData.NPC_TOP_SPEED;
                 MONEY_BAG.capacity = 2;
                 wanderChance = 1000;
                 break;
