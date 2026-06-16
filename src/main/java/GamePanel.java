@@ -114,7 +114,6 @@ public class GamePanel extends JPanel implements Runnable {
         double deltaTime = 0;
         long lastTime = System.nanoTime();
         long currentTime;
-        gameData.allHumans.addAll(gameData.allPortals.get(0).generateNPC(gameData.townCenter));
         while (gameThread != null) {
             // Calculate the time elapsed since the last frame (Learned from YouTube)
             currentTime = System.nanoTime();
@@ -300,11 +299,13 @@ public class GamePanel extends JPanel implements Runnable {
                         if (human.id == GameData.JobID.VILLAGER) {
                             // Take away an item
                             Projectile item = container.takeAway(container.numItems - 1);
-                            if (item.data.getId() == GameData.ItemID.BOW) {
-                                // Become an archer
-                                human.id = GameData.JobID.ARCHER;
-                            } else if (item.data.getId() == GameData.ItemID.SICKLE) {
-                                human.id = GameData.JobID.FARMER;
+                            if (item != null) {
+                                if (item.data.getId() == GameData.ItemID.BOW) {
+                                    // Become an archer
+                                    human.id = GameData.JobID.ARCHER;
+                                } else if (item.data.getId() == GameData.ItemID.SICKLE) {
+                                    human.id = GameData.JobID.FARMER;
+                                }
                             }
                         }
                         // Reset the human anyway if they reached the shop

@@ -67,6 +67,12 @@ public class ContainerStruct extends Structure {
      * @param index the index of the entity to be taken away from the structure
      * */
     public Projectile takeAway(int index) {
+        if  (containing == null || relativePos == null) {
+            return null;
+        }
+        if (index < 0 || index >= numItems) {
+            return null;
+        }
         Projectile taken = this.containing[index].duplicate();
         containing[index] = null;
         return taken;
@@ -100,7 +106,8 @@ public class ContainerStruct extends Structure {
         int xOnScreen = cam.convertX(imgX);
         int yOnScreen = cam.convertY(imgY);
         g2d.drawImage(
-                payImg, xOnScreen, yOnScreen, hintWidth, hintHeight, null);
+                payImg, xOnScreen, yOnScreen, hintWidth, hintHeight, null
+        );
     }
 
     /**
